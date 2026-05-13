@@ -1,5 +1,8 @@
 package mi_cacharrito.modelo;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -10,8 +13,27 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "itinerario")
-@IdClass(Itinerario.class)
+@IdClass(Itinerario.ItinerarioId.class)
 public class Itinerario {
+
+    public static class ItinerarioId implements Serializable {
+        private int viaje;
+        private short ordenVisita;
+
+        public ItinerarioId() {}
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof ItinerarioId)) return false;
+            ItinerarioId that = (ItinerarioId) o;
+            return ordenVisita == that.ordenVisita && viaje == that.viaje;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(viaje, ordenVisita);
+        }
+    }
 
     @Id
     @ManyToOne
@@ -26,44 +48,35 @@ public class Itinerario {
     @JoinColumn(name = "destino_id", nullable = false)
     private Destino destino;
 
-   
-
     public Itinerario(short ordenVisita, Destino destino, Viaje viaje) {
         this.ordenVisita = ordenVisita;
         this.destino = destino;
         this.viaje = viaje;
     }
 
-
-     public Itinerario() {
- 
-     }
-
+    public Itinerario() {}
 
     public short getOrdenVisita() { 
-        return ordenVisita; }
-
+        return ordenVisita; 
+    }
 
     public void setOrdenVisita(short ordenVisita) { 
-        this.ordenVisita = ordenVisita; }
-
-
+        this.ordenVisita = ordenVisita; 
+    }
 
     public Destino getDestino() { 
-        return destino; }
-
-
+        return destino; 
+    }
+    
     public void setDestino(Destino destino) { 
-        this.destino = destino; }
-
-
+        this.destino = destino; 
+    }
 
     public Viaje getViaje() { 
-        return viaje; }
+        return viaje; 
+    }
 
-
-    public void setViaje(Viaje viaje) {
-         this.viaje = viaje; }
-         
-         
+    public void setViaje(Viaje viaje) { 
+        this.viaje = viaje; 
+    }
 }

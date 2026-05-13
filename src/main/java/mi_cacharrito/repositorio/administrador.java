@@ -14,4 +14,3 @@ public interface administrador extends JpaRepository<Administrador, Integer> {
     public List<Administrador> findByUsuario(String usuario);
 
 }
-
