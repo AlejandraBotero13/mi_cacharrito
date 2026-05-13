@@ -2,25 +2,29 @@ package mi_cacharrito.modelo;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "itinerario")
+@IdClass(Itinerario.class)
 public class Itinerario {
 
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "viaje_id", nullable = false)
+    private Viaje viaje;
 
+    @Id
     @Column(name = "orden_visita", nullable = false)
     private short ordenVisita;
 
     @ManyToOne
     @JoinColumn(name = "destino_id", nullable = false)
     private Destino destino;
-
-    @ManyToOne
-    @JoinColumn(name = "viaje_id", nullable = false)
-    private Viaje viaje;
 
    
 
@@ -60,5 +64,6 @@ public class Itinerario {
 
     public void setViaje(Viaje viaje) {
          this.viaje = viaje; }
+         
          
 }
