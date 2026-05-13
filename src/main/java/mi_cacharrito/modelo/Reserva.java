@@ -33,15 +33,15 @@ public class Reserva {
 
     @ManyToOne
     @JoinColumn(name = "usuario_cc", nullable = false)
-    private Usuario usuario;
+    private Usuario usuario_cc;
 
     @ManyToOne
     @JoinColumn(name = "viaje_id", nullable = false)
-    private Viaje viaje;
+    private Viaje viaje_id;
 
     @ManyToOne
     @JoinColumn(name = "administrador_id", nullable = false)
-    private Administrador administrador;
+    private Administrador administrador_id;
 
     @Column(name = "total_pagar", nullable = false)
     private BigDecimal totalPagar;
@@ -51,16 +51,15 @@ public class Reserva {
 
    
 
-    public Reserva(int id, int numeroAsiento, LocalDateTime fechaReserva, EstadoReserva estado,
-                   Usuario usuario, Viaje viaje, Administrador administrador, BigDecimal totalPagar) {
+    public Reserva(int id, int numeroAsiento, LocalDateTime fechaReserva, EstadoReserva estado, Usuario usuario, Viaje viaje, Administrador administrador, BigDecimal totalPagar) {
                     
         this.id = id;
         this.numeroAsiento = numeroAsiento;
         this.fechaReserva = fechaReserva;
         this.estado = estado;
-        this.usuario = usuario;
-        this.viaje = viaje;
-        this.administrador = administrador;
+        this.usuario_cc = usuario;
+        this.viaje_id = viaje;
+        this.administrador_id = administrador;
         this.totalPagar = totalPagar;
     }
 
@@ -101,27 +100,27 @@ public class Reserva {
 
 
     public Usuario getUsuario() { 
-        return usuario; }
+        return usuario_cc; }
 
 
     public void setUsuario(Usuario usuario) { 
-        this.usuario = usuario; }
+        this.usuario_cc = usuario; }
 
 
     public Viaje getViaje() {
-         return viaje; }
+         return viaje_id    ; }
 
 
     public void setViaje(Viaje viaje) { 
-        this.viaje = viaje; }
+        this.viaje_id = viaje; }
 
 
     public Administrador getAdministrador() {
-         return administrador; }
+         return administrador_id; }
 
 
     public void setAdministrador(Administrador administrador) {
-         this.administrador = administrador; }
+         this.administrador_id = administrador; }
 
 
     public BigDecimal getTotalPagar() { 

@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 @Repository
 public interface reserva extends JpaRepository<Reserva, Integer> {
     public List<Reserva> findByUsuario_Cc(int cc);
-    public List<Reserva> findByViaje_Id(int viajeId);
-    public List<Reserva> findByAdministrador_Id(int administradorId);
+    public List<Reserva> findByViajeId(int viajeId);
+    public List<Reserva> findByAdministradorId(int administradorId);
     public List<Reserva> findByEstado(Reserva.EstadoReserva estado);
     public List<Reserva> findByFechaReserva(LocalDateTime fechaReserva);
     public List<Reserva> findByNumeroAsiento(int numeroAsiento);
