@@ -2,8 +2,6 @@ package mi_cacharrito.modelo;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,21 +27,17 @@ public class Automovil {
     @Column(name = "marca", length = 25, nullable = false)
     private String marca;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "estado", nullable = false)
-    private Estado estado;
-
-    public enum Estado {disponible, no_disponible }
 
 
    
-    public Automovil(int id, String placa, int capacidad, int modelo, String marca, Estado estado) {
+    public Automovil(int id, String placa, int capacidad, int modelo, String marca) {
         this.id = id;
         this.placa = placa;
         this.capacidad = capacidad;
         this.modelo = modelo;
         this.marca = marca;
-        this.estado = estado;
+        
+
     }
 
     public Automovil() {
@@ -88,14 +82,6 @@ public class Automovil {
 
     public void setMarca(String marca) {
          this.marca = marca; }
-
-
-    public Estado getEstado(){
-         return estado; }
-
-
-    public void setEstado(Estado estado){
-         this.estado = estado; }
 
          
 }

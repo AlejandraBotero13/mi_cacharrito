@@ -2,9 +2,6 @@ package mi_cacharrito.modelo;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -13,9 +10,6 @@ import jakarta.persistence.Table;
 @Table(name = "itinerario")
 public class Itinerario {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private int id;
 
     @Column(name = "orden_visita", nullable = false)
     private short ordenVisita;
@@ -30,8 +24,7 @@ public class Itinerario {
 
    
 
-    public Itinerario(int id, short ordenVisita, Destino destino, Viaje viaje) {
-        this.id = id;
+    public Itinerario(short ordenVisita, Destino destino, Viaje viaje) {
         this.ordenVisita = ordenVisita;
         this.destino = destino;
         this.viaje = viaje;
@@ -41,15 +34,6 @@ public class Itinerario {
      public Itinerario() {
  
      }
-
-
-    public int getId() {
-         return id; }
-
-
-    public void setId(int id) { 
-        this.id = id; }
-
 
 
     public short getOrdenVisita() { 

@@ -11,7 +11,8 @@ import java.time.LocalDate;
 public class Usuario {
 
     @Id
-    private int cc;
+    @Column(name= "cc", length = 15, nullable = false)
+    private String cc;
 
     @Column(name = "nombre", length = 45, nullable = false)
     private String nombre;
@@ -26,7 +27,7 @@ public class Usuario {
     private String telefono;
 
     
-    public Usuario(int cc, String nombre, String apellido, LocalDate fechaNacimiento, String telefono) {
+    public Usuario(String cc, String nombre, String apellido, LocalDate fechaNacimiento, String telefono) {
         this.cc = cc;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -39,11 +40,11 @@ public class Usuario {
     }
 
 
-    public int getCc() { 
+    public String getCc() { 
         return cc; }
 
 
-    public void setCc(int cc) {
+    public void setCc(String cc) {
          this.cc = cc; }
 
 
@@ -77,4 +78,5 @@ public class Usuario {
 
     public void setTelefono(String telefono) {
          this.telefono = telefono; }
+         
 }

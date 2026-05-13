@@ -29,7 +29,7 @@ public class Reserva {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false)
-    private Estado estado;
+    private EstadoReserva estado;
 
     @ManyToOne
     @JoinColumn(name = "usuario_cc", nullable = false)
@@ -46,14 +46,14 @@ public class Reserva {
     @Column(name = "total_pagar", nullable = false)
     private BigDecimal totalPagar;
 
-    public enum Estado {pagada, pendiente, cancelada
-        
+    public enum EstadoReserva { pagada, pendiente, cancelada
     }
 
-  
+   
 
-    public Reserva(int id, int numeroAsiento, LocalDateTime fechaReserva, Estado estado,
+    public Reserva(int id, int numeroAsiento, LocalDateTime fechaReserva, EstadoReserva estado,
                    Usuario usuario, Viaje viaje, Administrador administrador, BigDecimal totalPagar) {
+                    
         this.id = id;
         this.numeroAsiento = numeroAsiento;
         this.fechaReserva = fechaReserva;
@@ -64,24 +64,24 @@ public class Reserva {
         this.totalPagar = totalPagar;
     }
 
-    public Reserva() {
+     public Reserva() {
 
-      }
+     }
 
-    public int getId() { 
-        return id; }
-
-
-    public void setId(int id) {
-         this.id = id; }
+    public int getId() {
+         return id; }
 
 
-    public int getNumeroAsiento() { 
-        return numeroAsiento; }
+    public void setId(int id) { 
+        this.id = id; }
 
 
-    public void setNumeroAsiento(int numeroAsiento) {
-         this.numeroAsiento = numeroAsiento; }
+    public int getNumeroAsiento() {
+         return numeroAsiento; }
+
+
+    public void setNumeroAsiento(int numeroAsiento) { 
+        this.numeroAsiento = numeroAsiento; }
 
 
     public LocalDateTime getFechaReserva() {
@@ -92,11 +92,11 @@ public class Reserva {
          this.fechaReserva = fechaReserva; }
 
 
-    public Estado getEstado() { 
+    public EstadoReserva getEstado() { 
         return estado; }
 
 
-    public void setEstado(Estado estado) { 
+    public void setEstado(EstadoReserva estado) { 
         this.estado = estado; }
 
 
@@ -116,20 +116,20 @@ public class Reserva {
         this.viaje = viaje; }
 
 
-    public Administrador getAdministrador() { 
-        return administrador; }
+    public Administrador getAdministrador() {
+         return administrador; }
 
 
-    public void setAdministrador(Administrador administrador) { 
-        this.administrador = administrador; }
+    public void setAdministrador(Administrador administrador) {
+         this.administrador = administrador; }
 
 
-    public BigDecimal getTotalPagar() {
-         return totalPagar; }
+    public BigDecimal getTotalPagar() { 
+        return totalPagar; }
 
 
-    public void setTotalPagar(BigDecimal totalPagar) {
-         this.totalPagar = totalPagar; }
+    public void setTotalPagar(BigDecimal totalPagar) { 
+        this.totalPagar = totalPagar; }
 
 
 
