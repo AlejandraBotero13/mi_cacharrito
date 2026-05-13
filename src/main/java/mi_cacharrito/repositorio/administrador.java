@@ -15,3 +15,4 @@ public interface administrador extends JpaRepository<Administrador, Integer> {
 
 }
 
+
