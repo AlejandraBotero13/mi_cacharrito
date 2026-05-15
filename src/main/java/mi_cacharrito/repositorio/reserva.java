@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Repository
 public interface reserva extends JpaRepository<Reserva, Integer> {
-    public List<Reserva> findByUsuario_Cc(int cc);
+    public List<Reserva> findByUsuario_Cc(String cc);
     public List<Reserva> findByViajeId(int viajeId);
     public List<Reserva> findByAdministradorId(int administradorId);
     public List<Reserva> findByEstado(Reserva.EstadoReserva estado);
