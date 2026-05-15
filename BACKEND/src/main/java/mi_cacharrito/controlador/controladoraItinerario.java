@@ -70,7 +70,6 @@ public class controladoraItinerario {
 
     @DeleteMapping("/eliminarDestino")
     public String eliminarDestino(@RequestParam("idViaje") int idViaje, @RequestParam("orden") short orden) {
-        Itinerario.ItinerarioId id = new Itinerario.ItinerarioId();
         List<Itinerario> lista = repositorioItinerario.findByViajeId(idViaje);
         for (Itinerario it : lista) {
             if (it.getOrdenVisita() == orden) {
