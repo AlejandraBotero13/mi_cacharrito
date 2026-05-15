@@ -70,7 +70,6 @@ public class controladoraItinerario {
 
     @DeleteMapping("/eliminarDestino")
     public String eliminarDestino(@RequestParam("idViaje") int idViaje, @RequestParam("orden") short orden) {
-        Itinerario.ItinerarioId id = new Itinerario.ItinerarioId();
         List<Itinerario> lista = repositorioItinerario.findByViajeId(idViaje);
         for (Itinerario it : lista) {
             if (it.getOrdenVisita() == orden) {
@@ -81,9 +80,8 @@ public class controladoraItinerario {
         return "No existe destino con esa orden en el viaje";
     }
 
-
     @PostMapping("/actualizarItinerario")
-    public String actualizarOrden(@RequestParam("idViaje") int idViaje, @RequestParam("ordenActual") short ordenActual, @RequestParam("nuevoOrden") short nuevoOrden) {
+    public String actualizarItinerario(@RequestParam("idViaje") int idViaje,  @RequestParam("ordenActual") short ordenActual,  @RequestParam("nuevoOrden") short nuevoOrden) {
         List<Itinerario> lista = repositorioItinerario.findByViajeId(idViaje);
         Itinerario it = null;
         for (Itinerario i : lista) {
@@ -92,13 +90,12 @@ public class controladoraItinerario {
                 break;
             }
         }
-        if (it == null) return "No se encontró el destino con esa orden";
+        if (it == null) return "No se encontró el destino con esa orden en el itinerario";
         it.setOrdenVisita(nuevoOrden);
         repositorioItinerario.save(it);
-        return "Orden actualizado correctamente";
+        return "Itinerario actualizado: orden del destino modificado correctamente";
     }
-
-
+    
     @GetMapping("/obtenerDestino")
     public ResponseEntity<?> obtenerDestino(@RequestParam("idViaje") int idViaje, @RequestParam("orden") short orden) {
         List<Itinerario> lista = repositorioItinerario.findByViajeId(idViaje);
