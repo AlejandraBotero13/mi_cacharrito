@@ -14,6 +14,6 @@ public interface viaje extends JpaRepository<Viaje, Integer> {
     public List<Viaje> findByHoraSalida(short horaSalida);
     public List<Viaje> findByPrecio(float precio);
     public List<Viaje> findByEstado(short estado);
-    public List<Viaje> findByAutomovil(int automovil);
+    public List<Viaje> findByAutomovilId(int automovilId);
 
 }

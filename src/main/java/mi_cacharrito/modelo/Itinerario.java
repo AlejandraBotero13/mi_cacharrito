@@ -38,7 +38,7 @@ public class Itinerario {
     @Id
     @ManyToOne
     @JoinColumn(name = "viaje_id", nullable = false)
-    private Viaje viaje;
+    private Viaje viaje_id;
 
     @Id
     @Column(name = "orden_visita", nullable = false)
@@ -46,12 +46,12 @@ public class Itinerario {
 
     @ManyToOne
     @JoinColumn(name = "destino_id", nullable = false)
-    private Destino destino;
+    private Destino destino_id;
 
     public Itinerario(short ordenVisita, Destino destino, Viaje viaje) {
         this.ordenVisita = ordenVisita;
-        this.destino = destino;
-        this.viaje = viaje;
+        this.destino_id = destino;
+        this.viaje_id = viaje;
     }
 
     public Itinerario() {}
@@ -65,18 +65,18 @@ public class Itinerario {
     }
 
     public Destino getDestino() { 
-        return destino; 
+        return destino_id; 
     }
     
     public void setDestino(Destino destino) { 
-        this.destino = destino; 
+        this.destino_id = destino; 
     }
 
     public Viaje getViaje() { 
-        return viaje; 
+        return viaje_id; 
     }
 
     public void setViaje(Viaje viaje) { 
-        this.viaje = viaje; 
+        this.viaje_id = viaje; 
     }
 }
