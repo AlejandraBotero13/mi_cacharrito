@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.List;
 
+import mi_cacharrito.modelo.Reserva;
 import mi_cacharrito.modelo.Usuario;
 
 
@@ -15,4 +16,5 @@ public interface usuario extends JpaRepository<Usuario, String> {
     public List<Usuario> findByApellido(String apellido);
     public List<Usuario> findByFechaNacimiento(LocalDate fechaNacimiento);
     public List<Usuario> findByTelefono(String telefono);
+  
 }
