@@ -10,9 +10,9 @@ import mi_cacharrito.modelo.Automovil;
 
 @Repository
 public interface automovil extends JpaRepository<Automovil, Integer> {
-    public List<Automovil> findByPlaca(String placa);
-    public List<Automovil> findByCapacidad(String capacidad);
-    public List<Automovil> findByModelo(String modelo);
-    public List<Automovil> findByMarca(String marca);
+    List<Automovil> findByPlaca(String placa);
+    List<Automovil> findByCapacidad(int  capacidad);
+    List<Automovil> findByModelo(int modelo);
+    List<Automovil> findByMarca(String marca);
 
 }
