@@ -37,7 +37,7 @@ public class Viaje {
 
     @ManyToOne
     @JoinColumn(name = "automovil_id", nullable = false)
-    private Automovil automovil_id;
+    private Automovil automovil;
 
     public enum EstadoViaje {
         activo, cancelado, finalizado,
@@ -51,7 +51,7 @@ public class Viaje {
         this.horaSalida = horaSalida;
         this.precio = precio;
         this.estado = estado;
-        this.automovil_id = automovil;
+        this.automovil = automovil;
     }
 
 
@@ -96,11 +96,11 @@ public class Viaje {
 
 
     public Automovil getAutomovil() {
-         return automovil_id; }
+         return automovil; }
 
 
     public void setAutomovil(Automovil automovil) {
-         this.automovil_id = automovil; }
+         this.automovil = automovil; }
 
 
 }
