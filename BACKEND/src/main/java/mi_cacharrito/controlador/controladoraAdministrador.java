@@ -257,7 +257,7 @@ public class controladoraAdministrador {
 
     @DeleteMapping("/eliminarItinerario")
     public String eliminarItinerario(@RequestParam("idViaje") int idViaje) {
-        List<Itinerario> lista = repositorioItinerario.findByViajeId(idViaje);
+        List<Itinerario> lista = repositorioItinerario.findByViaje_Id(idViaje);
         if (lista.isEmpty()) return "No existe itinerario para ese viaje";
         repositorioItinerario.deleteAll(lista);
         return "Itinerario eliminado";

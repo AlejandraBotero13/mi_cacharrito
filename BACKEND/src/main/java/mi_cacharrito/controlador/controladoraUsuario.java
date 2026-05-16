@@ -78,7 +78,7 @@ public class controladoraUsuario {
 
     @GetMapping("/consultarReservas")
     public List<Reserva> consultarReservas(@RequestParam("cc") String cc) {
-        return repositorioReserva.findByUsuario_Cc(cc);
+        return repositorioReserva.findByUsuarioCc(cc);
     }
 
     @DeleteMapping("/cancelarReserva")

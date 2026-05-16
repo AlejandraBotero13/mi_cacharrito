@@ -61,7 +61,7 @@ public class controladoraItinerario {
 
     @GetMapping("/listarDestinos")
     public ResponseEntity<?> listarDestinos(@RequestParam("idViaje") int idViaje) {
-        List<Itinerario> lista = repositorioItinerario.findByViajeId(idViaje);
+        List<Itinerario> lista = repositorioItinerario.findByViaje_Id(idViaje);
         if (lista.isEmpty()) {
             return ResponseEntity.status(404).body("No hay destinos para este viaje");
         }
@@ -70,7 +70,7 @@ public class controladoraItinerario {
 
     @DeleteMapping("/eliminarDestino")
     public String eliminarDestino(@RequestParam("idViaje") int idViaje, @RequestParam("orden") short orden) {
-        List<Itinerario> lista = repositorioItinerario.findByViajeId(idViaje);
+        List<Itinerario> lista = repositorioItinerario.findByViaje_Id(idViaje);
         for (Itinerario it : lista) {
             if (it.getOrdenVisita() == orden) {
                 repositorioItinerario.delete(it);
@@ -82,7 +82,7 @@ public class controladoraItinerario {
 
     @PostMapping("/actualizarItinerario")
     public String actualizarItinerario(@RequestParam("idViaje") int idViaje,  @RequestParam("ordenActual") short ordenActual,  @RequestParam("nuevoOrden") short nuevoOrden) {
-        List<Itinerario> lista = repositorioItinerario.findByViajeId(idViaje);
+        List<Itinerario> lista = repositorioItinerario.findByViaje_Id(idViaje);
         Itinerario it = null;
         for (Itinerario i : lista) {
             if (i.getOrdenVisita() == ordenActual) {
@@ -98,7 +98,7 @@ public class controladoraItinerario {
     
     @GetMapping("/obtenerDestino")
     public ResponseEntity<?> obtenerDestino(@RequestParam("idViaje") int idViaje, @RequestParam("orden") short orden) {
-        List<Itinerario> lista = repositorioItinerario.findByViajeId(idViaje);
+        List<Itinerario> lista = repositorioItinerario.findByViaje_Id(idViaje);
         for (Itinerario it : lista) {
             if (it.getOrdenVisita() == orden) {
                 return ResponseEntity.ok(it.getDestino());
@@ -109,7 +109,7 @@ public class controladoraItinerario {
 
     @DeleteMapping("/eliminarItinerario")
     public String eliminarItinerario(@RequestParam("idViaje") int idViaje) {
-        List<Itinerario> lista = repositorioItinerario.findByViajeId(idViaje);
+        List<Itinerario> lista = repositorioItinerario.findByViaje_Id(idViaje);
         if (lista.isEmpty()) return "No hay itinerario para ese viaje";
         repositorioItinerario.deleteAll(lista);
         return "Itinerario completo eliminado";

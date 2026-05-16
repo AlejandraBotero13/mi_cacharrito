@@ -33,15 +33,15 @@ public class Reserva {
 
     @ManyToOne
     @JoinColumn(name = "usuario_cc", nullable = false)
-    private Usuario usuario_cc;
+    private Usuario usuario;
 
     @ManyToOne
     @JoinColumn(name = "viaje_id", nullable = false)
-    private Viaje viaje_id;
+    private Viaje viaje;
 
     @ManyToOne
     @JoinColumn(name = "administrador_id", nullable = false)
-    private Administrador administrador_id;
+    private Administrador administrador;
 
     @Column(name = "total_pagar", nullable = false)
     private BigDecimal totalPagar;
@@ -57,9 +57,9 @@ public class Reserva {
         this.numeroAsiento = numeroAsiento;
         this.fechaReserva = fechaReserva;
         this.estado = estado;
-        this.usuario_cc = usuario;
-        this.viaje_id = viaje;
-        this.administrador_id = administrador;
+        this.usuario = usuario;
+        this.viaje = viaje;
+        this.administrador = administrador;
         this.totalPagar = totalPagar;
     }
 
@@ -100,27 +100,27 @@ public class Reserva {
 
 
     public Usuario getUsuario() { 
-        return usuario_cc; }
+        return usuario; }
 
 
     public void setUsuario(Usuario usuario) { 
-        this.usuario_cc = usuario; }
+        this.usuario = usuario; }
 
 
     public Viaje getViaje() {
-         return viaje_id    ; }
+         return viaje    ; }
 
 
     public void setViaje(Viaje viaje) { 
-        this.viaje_id = viaje; }
+        this.viaje = viaje; }
 
 
     public Administrador getAdministrador() {
-         return administrador_id; }
+         return administrador; }
 
 
     public void setAdministrador(Administrador administrador) {
-         this.administrador_id = administrador; }
+         this.administrador = administrador; }
 
 
     public BigDecimal getTotalPagar() { 
