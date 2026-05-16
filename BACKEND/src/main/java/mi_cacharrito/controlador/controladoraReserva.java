@@ -1,98 +1,103 @@
 package mi_cacharrito.controlador;
-
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import mi_cacharrito.modelo.Administrador;
 import mi_cacharrito.modelo.Reserva;
+import mi_cacharrito.modelo.Reserva.EstadoReserva;
 import mi_cacharrito.modelo.Usuario;
 import mi_cacharrito.modelo.Viaje;
+import mi_cacharrito.repositorio.administrador;
 import mi_cacharrito.repositorio.reserva;
 import mi_cacharrito.repositorio.usuario;
 import mi_cacharrito.repositorio.viaje;
 
 @RestController
-@RequestMapping("/usuarios/u/")
+@RequestMapping("/reservas/r/")
 @CrossOrigin(origins = "http://localhost:4200")
 public class controladoraReserva {
-
-    @Autowired
-    private usuario repositorioUsuario;
 
     @Autowired
     private reserva repositorioReserva;
 
     @Autowired
+    private usuario repositorioUsuario;
+
+    @Autowired
     private viaje repositorioViaje;
 
-    @GetMapping("/listar")
-    public List<Usuario> listar() {
-        return repositorioUsuario.findAll();
-    }
-
-    @GetMapping("/buscarCc")
-    public ResponseEntity<?> buscarPorCc(@RequestParam("cc") String cc) {
-        Optional<Usuario> u = repositorioUsuario.findById(cc);
-        if (u.isPresent()) return ResponseEntity.ok(u.get());
-        return ResponseEntity.status(404).body("Usuario no encontrado");
-    }
-
-    @PostMapping("/guardar")
-    public ResponseEntity<Usuario> guardar(@RequestBody Usuario usuario) {
-        repositorioUsuario.save(usuario);
-        return ResponseEntity.ok(usuario);
-    }
-
-    @DeleteMapping("/eliminar")
-    public String eliminar(@RequestParam("cc") String cc) {
-        if (repositorioUsuario.existsById(cc)) {
-            repositorioUsuario.deleteById(cc);
-            return "Usuario eliminado";
-        }
-        return "No existe usuario con cc: " + cc;
-    }
+    @Autowired
+    private administrador repositorioAdministrador;
 
     @PostMapping("/crearReserva")
-    public ResponseEntity<?> crearReserva(@RequestParam("ccUsuario") String cc, @RequestParam("numAsiento") int asiento, @RequestParam("idViaje") int idViaje) {
-        Optional<Usuario> user = repositorioUsuario.findById(cc);
+    public ResponseEntity<?> crearReserva(@RequestParam("numAsiento") int numAsiento, @RequestParam("idViaje") int idViaje, @RequestParam("ccUsuario") String ccUsuario, @RequestParam("idAdmin") int idAdmin) {
         Optional<Viaje> viaje = repositorioViaje.findById(idViaje);
-        if (user.isEmpty() || viaje.isEmpty()) {
-            return ResponseEntity.status(404).body("Usuario o Viaje no encontrado");
+        Optional<Usuario> usuario = repositorioUsuario.findById(ccUsuario);
+        Optional<Administrador> admin = repositorioAdministrador.findById(idAdmin);
+        if (viaje.isEmpty() || usuario.isEmpty() || admin.isEmpty()) {
+            return ResponseEntity.status(404).body("Viaje, Usuario o Administrador no encontrado");
         }
-        return ResponseEntity.badRequest().body("Use el endpoint /reservas/r/crearReserva con un administrador válido");
+        Reserva r = new Reserva();
+        r.setNumeroAsiento(numAsiento);
+        r.setFechaReserva(LocalDateTime.now());
+        r.setEstado(EstadoReserva.pendiente);
+        r.setUsuario(usuario.get());
+        r.setViaje(viaje.get());
+        r.setAdministrador(admin.get());
+        r.setTotalPagar(viaje.get().getPrecio()); 
+        repositorioReserva.save(r);
+        return ResponseEntity.ok(r);
     }
 
-    @PutMapping("/actualizarReserva")
-    public String actualizarReserva(@RequestBody Reserva reserva) {
-        if (!repositorioReserva.existsById(reserva.getId()))
-            return "Reserva no existe";
-        repositorioReserva.save(reserva);
-        return "Reserva actualizada";
+    @GetMapping("/listarReservas")
+    public List<Reserva> listarReservas() {
+        return repositorioReserva.findAll();
     }
 
-    @GetMapping("/consultarReservas")
-    public List<Reserva> consultarReservas(@RequestParam("cc") String cc) {
-        return repositorioReserva.findByUsuario_Cc(cc);
+    @DeleteMapping("/eliminarReserva")
+    public String eliminarReserva(@RequestParam("id") int id) {
+        if (!repositorioReserva.existsById(id))
+            return "No existe reserva con id: " + id;
+        repositorioReserva.deleteById(id);
+        return "Reserva eliminada";
     }
 
-    @DeleteMapping("/cancelarReserva")
-    public String cancelarReserva(@RequestParam("idReserva") int idReserva) {
-        Optional<Reserva> r = repositorioReserva.findById(idReserva);
-        if (r.isEmpty()) return "Reserva no existe";
-        Reserva reserva = r.get();
-        reserva.setEstado(Reserva.EstadoReserva.cancelada);
-        repositorioReserva.save(reserva);
+    @GetMapping("/calcularTotal")
+    public ResponseEntity<?> calcularTotal(@RequestParam("id") int id) {
+        Double total = repositorioReserva.calcularTotal(id);
+        if (total == null) return ResponseEntity.status(404).body("Reserva no encontrada");
+        return ResponseEntity.ok("Total a pagar: " + total);
+    }
+
+    @PostMapping("/confirmarPago")
+    public String confirmarPago(@RequestParam("id") int id) {
+        Optional<Reserva> opt = repositorioReserva.findById(id);
+        if (opt.isEmpty()) return "Reserva no existe";
+        Reserva r = opt.get();
+        r.setEstado(EstadoReserva.pagada);
+        repositorioReserva.save(r);
+        return "Pago confirmado, reserva pagada";
+    }
+
+    @GetMapping("/consultarReserva")
+    public ResponseEntity<?> consultarReserva(@RequestParam("id") int id) {
+        Optional<Reserva> r = repositorioReserva.findById(id);
+        if (r.isPresent()) return ResponseEntity.ok(r.get());
+        return ResponseEntity.status(404).body("Reserva no encontrada");
+    }
+
+    @PostMapping("/cancelarReserva")
+    public String cancelarReserva(@RequestParam("id") int id) {
+        Optional<Reserva> opt = repositorioReserva.findById(id);
+        if (opt.isEmpty()) return "Reserva no existe";
+        Reserva r = opt.get();
+        r.setEstado(EstadoReserva.cancelada);
+        repositorioReserva.save(r);
         return "Reserva cancelada";
     }
 }
