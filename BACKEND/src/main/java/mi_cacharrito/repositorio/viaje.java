@@ -1,7 +1,7 @@
 package mi_cacharrito.repositorio;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -13,7 +13,7 @@ import mi_cacharrito.modelo.Viaje;
 
 @Repository
 public interface viaje extends JpaRepository<Viaje, Integer> {
-    public List<Viaje> findByFecha(Date fecha);
+    public List<Viaje> findByFecha(LocalDate fecha);
     public List<Viaje> findByHoraSalida(LocalTime horaSalida);
     public List<Viaje> findByPrecio(BigDecimal  precio);
     public List<Viaje> findByEstado(Viaje.EstadoViaje estado);
