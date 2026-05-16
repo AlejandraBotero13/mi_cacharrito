@@ -1,4 +1,5 @@
 package mi_cacharrito.controlador;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -69,7 +70,7 @@ public class controladoraReserva {
 
     @GetMapping("/calcularTotal")
     public ResponseEntity<?> calcularTotal(@RequestParam("id") int id) {
-        Double total = repositorioReserva.calcularTotal(id);
+        BigDecimal total = repositorioReserva.calcularTotal(id);
         if (total == null) return ResponseEntity.status(404).body("Reserva no encontrada");
         return ResponseEntity.ok("Total a pagar: " + total);
     }

@@ -97,7 +97,7 @@ public class controladoraViaje {
 
     @GetMapping("/obtenerItinerario")
     public ResponseEntity<?> obtenerItinerario(@RequestParam("idViaje") int idViaje) {
-        List<Itinerario> lista = repositorioItinerario.findByViajeId(idViaje);
+        List<Itinerario> lista = repositorioItinerario.findByViaje_Id(idViaje);
         if (lista.isEmpty())
             return ResponseEntity.status(404).body("El viaje no tiene itinerario");
         return ResponseEntity.ok(lista);
