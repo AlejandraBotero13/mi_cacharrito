@@ -17,7 +17,7 @@ public interface viaje extends JpaRepository<Viaje, Integer> {
     public List<Viaje> findByHoraSalida(LocalTime horaSalida);
     public List<Viaje> findByPrecio(BigDecimal  precio);
     public List<Viaje> findByEstado(Viaje.EstadoViaje estado);
-    List<Viaje> findByAutomovilId(@Param("id") int automovilId);
+    List<Viaje> findByAutomovil_Id(@Param("id") int automovilId);
 
 
 }
