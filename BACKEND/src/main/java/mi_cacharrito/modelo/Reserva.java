@@ -40,7 +40,7 @@ public class Reserva {
     private Viaje viaje;
 
     @ManyToOne
-    @JoinColumn(name = "administrador_id", nullable = false)
+    @JoinColumn(name = "administrador_id", nullable = true)
     private Administrador administrador;
 
     @Column(name = "total_pagar", nullable = false)
