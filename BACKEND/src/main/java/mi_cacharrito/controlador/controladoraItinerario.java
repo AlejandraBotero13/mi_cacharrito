@@ -35,13 +35,15 @@ public class controladoraItinerario {
     private destino repositorioDestino;
 
     @PostMapping("/crearItinerario")
-    public ResponseEntity<?> crearItinerario(@RequestParam("idViaje") int idViaje) {
+    public ResponseEntity<?> crearItinerario(@RequestParam("idViaje") int idViaje, @RequestParam("idDestino") int idDestino, @RequestParam("orden") short orden) {
         Optional<Viaje> viaje = repositorioViaje.findById(idViaje);
-        if (viaje.isEmpty()) {
-            return ResponseEntity.status(404).body("Viaje no encontrado");
+        Optional<Destino> destino = repositorioDestino.findById(idDestino);
+        if (viaje.isEmpty() || destino.isEmpty()) {
+            return ResponseEntity.status(404).body("Viaje o Destino no existe");
         }
-        
-        return ResponseEntity.badRequest().body("Use 'agregarDestino' para crear el itinerario progresivamente");
+        Itinerario it = new Itinerario(orden, destino.get(), viaje.get());
+        repositorioItinerario.save(it);
+        return ResponseEntity.ok(it);
     }
 
 
