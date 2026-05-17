@@ -142,19 +142,34 @@ public class controladoraAdministrador {
     }
 
     @DeleteMapping("/eliminarViaje")
-    public String eliminarViaje(@RequestParam("id") int id) {
-        if (!repositorioViaje.existsById(id)) {
-            return "Viaje no existe";
-        }
-
-        List<Itinerario> itinerarios = repositorioItinerario.findByViaje_Id(id);
-        if (!itinerarios.isEmpty()) {
-            return "No se puede eliminar el viaje porque tiene " + itinerarios.size() + " itinerarios asociados. Primero elimine el itinerario";
-        }
-
-        repositorioViaje.deleteById(id);
-        return "Viaje eliminado correctamente";
+public String eliminarViaje(@RequestParam("id") int id) {
+    if (!repositorioViaje.existsById(id)) {
+        return "Viaje no existe";
     }
+
+    List<Itinerario> itinerarios = repositorioItinerario.findByViaje_Id(id);
+    if (!itinerarios.isEmpty()) {
+        repositorioItinerario.deleteAll(itinerarios);
+    }
+
+    List<Reserva> reservas = repositorioReserva.findByViajeId(id);
+    if (!reservas.isEmpty()) {
+        boolean todasPermitidas = reservas.stream()
+                .allMatch(r -> r.getEstado() == Reserva.EstadoReserva.finalizada ||
+                               r.getEstado() == Reserva.EstadoReserva.cancelada);
+        if (!todasPermitidas) {
+            return "No se puede eliminar el viaje porque tiene reservas pendientes o pagadas. " +
+                   "Debe cancelarlas o esperar a que finalicen.";
+        }
+        for (Reserva r : reservas) {
+            r.setViaje(null);
+            repositorioReserva.save(r);
+        }
+    }
+
+    repositorioViaje.deleteById(id);
+    return "Viaje eliminado correctamente. Se desvincularon " + reservas.size() + " reservas (no eliminadas).";
+}
 
     // ========== RESERVAS ==========
     @PostMapping("/crearReserva")
