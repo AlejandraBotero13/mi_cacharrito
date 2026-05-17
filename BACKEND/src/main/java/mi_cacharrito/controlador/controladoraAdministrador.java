@@ -109,14 +109,23 @@ public class controladoraAdministrador {
 
     // ========== VIAJES ==========
     @PostMapping("/crearViaje")
-    public ResponseEntity<?> crearViaje(@RequestParam("fecha") String fecha, @RequestParam("horaSalida") String horaSalida, @RequestParam("precio") BigDecimal precio, @RequestParam("lugarSalida") String lugarSalida) {
+    public ResponseEntity<?> crearViaje(@RequestParam("fecha") String fecha, @RequestParam("horaSalida") String horaSalida, @RequestParam("precio") BigDecimal precio, @RequestParam("lugarSalida") String lugarSalida,@RequestParam("idAuto") int idAuto) {
+
+            Optional<Automovil> auto = repositorioAutomovil.findById(idAuto);
+    if (auto.isEmpty()) {
+        return ResponseEntity.status(404).body("Automóvil no existe con id: " + idAuto);
+    }
+
         Viaje v = new Viaje();
         v.setFecha(LocalDate.parse(fecha));
         v.setHoraSalida(LocalTime.parse(horaSalida));
         v.setPrecio(precio);
+        v.setLugarSalida(lugarSalida);
+        v.setAutomovil(auto.get());
         v.setEstado(Viaje.EstadoViaje.activo);
         repositorioViaje.save(v);
         return ResponseEntity.ok(v);
+
     }
 
     @GetMapping("/listarViajes")
