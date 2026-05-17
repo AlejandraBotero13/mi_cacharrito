@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import mi_cacharrito.modelo.Destino;
+import mi_cacharrito.modelo.Itinerario;
 import mi_cacharrito.repositorio.destino;
 
 @RestController
@@ -21,6 +22,9 @@ public class controladoraDestino {
 
     @Autowired 
     private destino repositorioDestino;
+
+    @Autowired
+    private mi_cacharrito.repositorio.itinerario repositorioItinerario;
 
     @PostMapping("/crearDestino")
     public String crearDestino(@RequestParam("nombre") String nombre, @RequestParam("descripcion") String descripcion) {
@@ -40,6 +44,13 @@ public class controladoraDestino {
     public String eliminarDestino(@RequestParam("id") int id) {
         if (!repositorioDestino.existsById(id))
             return "No existe un destino con el id: " + id;
+
+        List<Itinerario> itinerarios = repositorioItinerario.findByDestino_Id(id);
+        if (!itinerarios.isEmpty()) {
+            return "No se puede eliminar el destino porque tiene " + itinerarios.size() +
+                   " itinerarios asociados. Elimine primero los itinerarios.";
+        }
+
         repositorioDestino.deleteById(id);
         return "Destino eliminado exitosamente";
     }

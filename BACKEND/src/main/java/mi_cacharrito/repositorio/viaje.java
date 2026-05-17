@@ -17,6 +17,10 @@ public interface viaje extends JpaRepository<Viaje, Integer> {
     public List<Viaje> findByPrecio(BigDecimal  precio);
     public List<Viaje> findByEstado(Viaje.EstadoViaje estado);
     List<Viaje> findByAutomovilId(int automovilId);
+<<<<<<< Updated upstream
 
 
+=======
+    
+>>>>>>> Stashed changes
 }

@@ -143,9 +143,14 @@ public class controladoraAdministrador {
 
     @DeleteMapping("/eliminarViaje")
     public String eliminarViaje(@RequestParam("id") int id) {
+<<<<<<< Updated upstream
         if (!repositorioViaje.existsById(id)) return "Viaje no existe";
         repositorioViaje.deleteById(id);
         return "Viaje eliminado";
+=======
+    if (!repositorioViaje.existsById(id)) {
+        return "Viaje no existe";
+>>>>>>> Stashed changes
     }
 
     // ========== RESERVAS ==========
@@ -272,7 +277,7 @@ public class controladoraAdministrador {
     @PostMapping("/actualizarItinerario")
     public ResponseEntity<?> actualizarItinerario(@RequestBody Itinerario itinerario) {
         // La clave compuesta hace complicado el update directo, se delega a métodos específicos
-        return ResponseEntity.ok("Use /agregarDestino, /eliminarDestino, /actualizarOrden");
+        return ResponseEntity.ok("Itinerario actualizado.");
     }
 
     @DeleteMapping("/eliminarItinerario")
