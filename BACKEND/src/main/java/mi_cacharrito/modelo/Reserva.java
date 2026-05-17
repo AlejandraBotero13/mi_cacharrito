@@ -1,5 +1,8 @@
 package mi_cacharrito.modelo;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,8 +13,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "reserva")
@@ -36,7 +37,7 @@ public class Reserva {
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "viaje_id", nullable = false)
+    @JoinColumn(name = "viaje_id", nullable = true)
     private Viaje viaje;
 
     @ManyToOne
@@ -46,7 +47,7 @@ public class Reserva {
     @Column(name = "total_pagar", nullable = false)
     private BigDecimal totalPagar;
 
-    public enum EstadoReserva { pagada, pendiente, cancelada
+    public enum EstadoReserva { pagada, pendiente, finalizada, cancelada
     }
 
    
