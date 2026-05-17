@@ -1,11 +1,20 @@
 package mi_cacharrito.controlador;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import mi_cacharrito.modelo.Reserva;
 import mi_cacharrito.modelo.Usuario;
@@ -50,23 +59,42 @@ public class controladoraUsuario {
 
     @DeleteMapping("/eliminar")
     public String eliminar(@RequestParam("cc") String cc) {
-        if (repositorioUsuario.existsById(cc)) {
-            repositorioUsuario.deleteById(cc);
-            return "Usuario eliminado";}
-        return "No existe usuario con cc: " + cc;
+        if (!repositorioUsuario.existsById(cc)) {
+            return "No existe usuario con cc: " + cc;
+        }
+        List<Reserva> reservas = repositorioReserva.findByUsuarioCc(cc);
+        if (!reservas.isEmpty()) {
+            return "No se puede eliminar el usuario porque tiene " + reservas.size() + " reservas asociadas. Cancelélas primero.";
+        }
+        repositorioUsuario.deleteById(cc);
+        return "Usuario eliminado";
     }
 
     
     @PostMapping("/crearReserva")
-    public ResponseEntity<?> crearReserva(@RequestParam("ccUsuario") String cc, @RequestParam("numAsiento") int asiento, @RequestParam("idViaje") int idViaje) {
-        Optional<Usuario> user = repositorioUsuario.findById(cc);
-        Optional<Viaje> viaje = repositorioViaje.findById(idViaje);
-        if (user.isEmpty() || viaje.isEmpty()) {
-            return ResponseEntity.status(404).body("Usuario o Viaje no encontrado");
-        }
+public ResponseEntity<?> crearReserva(@RequestParam("ccUsuario") String cc, @RequestParam("numAsiento") int asiento, @RequestParam("idViaje") int idViaje) {
+    Optional<Usuario> userOpt = repositorioUsuario.findById(cc);
+    Optional<Viaje> viajeOpt = repositorioViaje.findById(idViaje);
     
-        return ResponseEntity.badRequest().body("Use el endpoint /reservas/r/crearReserva con un administrador válido");
+    if (userOpt.isEmpty() || viajeOpt.isEmpty()) {
+        return ResponseEntity.status(404).body("Usuario o Viaje no encontrado");
     }
+    
+    Usuario usuario = userOpt.get();
+    Viaje viaje = viajeOpt.get();
+    
+    Reserva reserva = new Reserva();
+    reserva.setNumeroAsiento(asiento);
+    reserva.setFechaReserva(LocalDateTime.now());
+    reserva.setEstado(Reserva.EstadoReserva.pendiente);
+    reserva.setUsuario(usuario);
+    reserva.setViaje(viaje);
+    reserva.setAdministrador(null);
+    reserva.setTotalPagar(viaje.getPrecio());
+    
+    repositorioReserva.save(reserva);
+    return ResponseEntity.ok(reserva);
+}
 
     @PutMapping("/actualizarReserva")
     public String actualizarReserva(@RequestBody Reserva reserva) {

@@ -45,6 +45,7 @@ public class controladoraViaje {
         v.setHoraSalida(LocalTime.parse(horaSalida));
         v.setPrecio(precio);
         v.setEstado(EstadoViaje.activo);
+        v.setLugarSalida(lugarSalida);
         repositorioViaje.save(v);
         return ResponseEntity.ok(v);
     }

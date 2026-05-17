@@ -3,8 +3,11 @@ package mi_cacharrito.controlador;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -143,14 +146,60 @@ public class controladoraAdministrador {
 
     @DeleteMapping("/eliminarViaje")
     public String eliminarViaje(@RequestParam("id") int id) {
-<<<<<<< Updated upstream
-        if (!repositorioViaje.existsById(id)) return "Viaje no existe";
+        if (!repositorioViaje.existsById(id)) {
+            return "Viaje no existe";
+        }
+
+        List<Itinerario> itinerarios = repositorioItinerario.findByViaje_Id(id);
+        if (!itinerarios.isEmpty()) {
+            repositorioItinerario.deleteAll(itinerarios);
+        }
+
+        List<Reserva> reservas = repositorioReserva.findByViajeId(id);
+        if (!reservas.isEmpty()) {
+            boolean todasPermitidas = reservas.stream()
+                    .allMatch(r -> r.getEstado() == Reserva.EstadoReserva.finalizada ||
+                                r.getEstado() == Reserva.EstadoReserva.cancelada);
+            if (!todasPermitidas) {
+                return "No se puede eliminar el viaje porque tiene reservas pendientes o pagadas. " +
+                    "Debe cancelarlas o esperar a que finalicen.";
+            }
+            for (Reserva r : reservas) {
+                r.setViaje(null);
+                repositorioReserva.save(r);
+            }
+        }
+
         repositorioViaje.deleteById(id);
-        return "Viaje eliminado";
-=======
-    if (!repositorioViaje.existsById(id)) {
-        return "Viaje no existe";
->>>>>>> Stashed changes
+        return "Viaje eliminado correctamente. Se desvincularon " + reservas.size() + " reservas (no eliminadas).";
+    }@DeleteMapping("/eliminarViaje")
+    public String eliminarViaje(@RequestParam("id") int id) {
+        if (!repositorioViaje.existsById(id)) {
+            return "Viaje no existe";
+        }
+
+        List<Itinerario> itinerarios = repositorioItinerario.findByViaje_Id(id);
+        if (!itinerarios.isEmpty()) {
+            repositorioItinerario.deleteAll(itinerarios);
+        }
+
+        List<Reserva> reservas = repositorioReserva.findByViajeId(id);
+        if (!reservas.isEmpty()) {
+            boolean todasPermitidas = reservas.stream()
+                    .allMatch(r -> r.getEstado() == Reserva.EstadoReserva.finalizada ||
+                                r.getEstado() == Reserva.EstadoReserva.cancelada);
+            if (!todasPermitidas) {
+                return "No se puede eliminar el viaje porque tiene reservas pendientes o pagadas. " +
+                    "Debe cancelarlas o esperar a que finalicen.";
+            }
+            for (Reserva r : reservas) {
+                r.setViaje(null);
+                repositorioReserva.save(r);
+            }
+        }
+
+        repositorioViaje.deleteById(id);
+        return "Viaje eliminado correctamente. Se desvincularon " + reservas.size() + " reservas (no eliminadas).";
     }
 
     // ========== RESERVAS ==========
@@ -262,11 +311,15 @@ public class controladoraAdministrador {
 
     // ========== ITINERARIOS ==========
     @PostMapping("/crearItinerario")
-    public ResponseEntity<?> crearItinerario(@RequestParam("idViaje") int idViaje) {
+    public ResponseEntity<?> crearItinerario(@RequestParam("idViaje") int idViaje, @RequestParam("idDestino") int idDestino, @RequestParam("orden") short orden) {
         Optional<Viaje> viaje = repositorioViaje.findById(idViaje);
-        if (viaje.isEmpty()) return ResponseEntity.status(404).body("Viaje no existe");
-        // Crear itinerario vacío (normalmente se crea al agregar destinos)
-        return ResponseEntity.ok("Itinerario creado (use agregarDestino)");
+        Optional<Destino> destino = repositorioDestino.findById(idDestino);
+        if (viaje.isEmpty() || destino.isEmpty()) {
+            return ResponseEntity.status(404).body("Viaje o Destino no existe");
+        }
+        Itinerario it = new Itinerario(orden, destino.get(), viaje.get());
+        repositorioItinerario.save(it);
+        return ResponseEntity.ok(it);
     }
 
     @GetMapping("/listarItinerarios")
@@ -290,10 +343,80 @@ public class controladoraAdministrador {
 
     // ========== REPORTES ==========
     @GetMapping("/generarReporte")
-    public String generarReporte() {
-        // Lógica para generar reporte (ej. cantidad de reservas por día, ingresos, etc.)
-        long totalReservas = repositorioReserva.count();
-        long totalViajes = repositorioViaje.count();
-        return "Reporte: Total reservas = " + totalReservas + ", Total viajes = " + totalViajes;
-    }
+public ResponseEntity<Map<String, Object>> generarReporte() {
+    Map<String, Object> reporte = new HashMap<>();
+
+    // ===== DATOS EXISTENTES =====
+    List<Reserva> todasReservas = repositorioReserva.findAll();
+    reporte.put("totalReservas", todasReservas.size());
+    reporte.put("reservasPorUsuario", todasReservas.stream()
+        .collect(Collectors.groupingBy(r -> r.getUsuario().getCc(), Collectors.counting())));
+    reporte.put("reservasPorAdministrador", todasReservas.stream()
+        .filter(r -> r.getAdministrador() != null)
+        .collect(Collectors.groupingBy(r -> r.getAdministrador().getId(), Collectors.counting())));
+
+    List<Viaje> todosViajes = repositorioViaje.findAll();
+    reporte.put("totalViajes", todosViajes.size());
+    reporte.put("viajesPorEstado", todosViajes.stream()
+        .collect(Collectors.groupingBy(Viaje::getEstado, Collectors.counting())));
+
+    reporte.put("totalAutomoviles", repositorioAutomovil.count());
+    reporte.put("totalDestinos", repositorioDestino.count());
+    reporte.put("totalItinerarios", repositorioItinerario.count());
+
+    // ===== NUEVAS MÉTRICAS =====
+
+    // 1. Ingresos totales (solo reservas pagadas o finalizadas)
+    BigDecimal ingresosTotales = todasReservas.stream()
+        .filter(r -> r.getEstado() == Reserva.EstadoReserva.pagada || 
+                     r.getEstado() == Reserva.EstadoReserva.finalizada)
+        .map(Reserva::getTotalPagar)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+    reporte.put("ingresosTotales", ingresosTotales);
+
+    // 2. Reservas por estado
+    Map<Reserva.EstadoReserva, Long> reservasPorEstado = todasReservas.stream()
+        .collect(Collectors.groupingBy(Reserva::getEstado, Collectors.counting()));
+    reporte.put("reservasPorEstado", reservasPorEstado);
+
+    // 3. Top 5 destinos más visitados (según itinerarios)
+    List<Itinerario> todosItinerarios = repositorioItinerario.findAll();
+    Map<String, Long> destinosCount = todosItinerarios.stream()
+        .map(it -> it.getDestino().getNombre())
+        .collect(Collectors.groupingBy(nombre -> nombre, Collectors.counting()));
+    List<Map.Entry<String, Long>> topDestinos = destinosCount.entrySet().stream()
+        .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+        .limit(5)
+        .collect(Collectors.toList());
+    reporte.put("topDestinos", topDestinos);
+
+    // 4. Utilización de automóviles (viajes por auto)
+    Map<Integer, Long> viajesPorAuto = todosViajes.stream()
+        .filter(v -> v.getAutomovil() != null)
+        .collect(Collectors.groupingBy(v -> v.getAutomovil().getId(), Collectors.counting()));
+    reporte.put("viajesPorAutomovil", viajesPorAuto);
+
+    // 5. Próximos viajes activos (fecha posterior a hoy)
+    LocalDate hoy = LocalDate.now();
+    long proximosViajes = todosViajes.stream()
+        .filter(v -> v.getEstado() == Viaje.EstadoViaje.activo && v.getFecha().isAfter(hoy))
+        .count();
+    reporte.put("proximosViajesActivos", proximosViajes);
+
+    // 6. Tasa de cancelación de reservas
+    long canceladas = reservasPorEstado.getOrDefault(Reserva.EstadoReserva.cancelada, 0L);
+    double tasaCancelacion = todasReservas.isEmpty() ? 0 : (double) canceladas / todasReservas.size();
+    reporte.put("tasaCancelacionReservas", tasaCancelacion);
+
+    // 7. Clientes frecuentes (más de 3 reservas)
+    Map<String, Long> reservasPorUsuarioMap = todasReservas.stream()
+        .collect(Collectors.groupingBy(r -> r.getUsuario().getCc(), Collectors.counting()));
+    List<String> clientesFrecuentes = reservasPorUsuarioMap.entrySet().stream()
+        .filter(e -> e.getValue() > 3)
+        .map(Map.Entry::getKey)
+        .collect(Collectors.toList());
+    reporte.put("clientesFrecuentes", clientesFrecuentes);
+
+    return ResponseEntity.ok(reporte);
+}
 }

@@ -1,5 +1,9 @@
 package mi_cacharrito.modelo;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,9 +14,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Entity
 @Table(name = "viaje")
@@ -35,6 +36,9 @@ public class Viaje {
     @Column(name = "estado", nullable = false)
     private EstadoViaje estado;
 
+    @Column(name = "lugar_salida", length = 100)
+    private String lugarSalida;
+
     @ManyToOne
     @JoinColumn(name = "automovil_id", nullable = true)
     private Automovil automovil;
@@ -45,12 +49,13 @@ public class Viaje {
 
     
 
-    public Viaje(int id, LocalDate fecha, LocalTime horaSalida, BigDecimal precio, EstadoViaje estado, Automovil automovil) {
+    public Viaje(int id, LocalDate fecha, LocalTime horaSalida, BigDecimal precio, EstadoViaje estado, String lugarSalida, Automovil automovil) {
         this.id = id;
         this.fecha = fecha;
         this.horaSalida = horaSalida;
         this.precio = precio;
         this.estado = estado;
+        this.lugarSalida = lugarSalida;
         this.automovil = automovil;
     }
 
@@ -94,6 +99,12 @@ public class Viaje {
     public void setEstado(EstadoViaje estado) { 
         this.estado = estado; }
 
+    public String getLugarSalida() { 
+        return lugarSalida; }
+
+    public void setLugarSalida(String lugarSalida) {
+        this.lugarSalida = lugarSalida;
+    }
 
     public Automovil getAutomovil() {
          return automovil; }
