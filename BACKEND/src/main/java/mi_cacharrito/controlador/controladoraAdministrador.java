@@ -76,13 +76,24 @@ public class controladoraAdministrador {
         return ResponseEntity.ok(admin);
     }
 
-    @DeleteMapping("/eliminar")
+   @DeleteMapping("/eliminar")
     public String eliminarAdministrador(@RequestParam("id") int id) {
-        if (repositorioAdministrador.existsById(id)) {
-            repositorioAdministrador.deleteById(id);
-            return "Administrador eliminado";
+        if (!repositorioAdministrador.existsById(id)) {
+            return "No existe administrador con id: " + id;
         }
-        return "No existe administrador con id: " + id;
+
+        List<Reserva> reservas = repositorioReserva.findByAdministradorId(id);
+        if (!reservas.isEmpty()) {
+           
+            for (Reserva r : reservas) {
+                r.setAdministrador(null);
+                repositorioReserva.save(r);
+            }
+           
+        }
+
+        repositorioAdministrador.deleteById(id);
+        return "Administrador eliminado y sus reservas han quedado sin administrador asociado.";
     }
 
     @PostMapping("/iniciarSesion")
