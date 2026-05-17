@@ -83,7 +83,7 @@ public class controladoraItinerario {
     }
 
     @PostMapping("/actualizarItinerario")
-    public String actualizarItinerario(@RequestParam("idViaje") int idViaje,  @RequestParam("ordenActual") short ordenActual,  @RequestParam("nuevoOrden") short nuevoOrden) {
+    public String actualizarItinerario(@RequestParam("idViaje") int idViaje, @RequestParam("ordenActual") short ordenActual, @RequestParam("nuevoOrden") short nuevoOrden) {
         List<Itinerario> lista = repositorioItinerario.findByViaje_Id(idViaje);
         Itinerario it = null;
         for (Itinerario i : lista) {
@@ -93,9 +93,22 @@ public class controladoraItinerario {
             }
         }
         if (it == null) return "No se encontró el destino con esa orden en el itinerario";
-        it.setOrdenVisita(nuevoOrden);
-        repositorioItinerario.save(it);
-        return "Itinerario actualizado: orden del destino modificado correctamente";
+
+        for (Itinerario i : lista) {
+            if (i.getOrdenVisita() == nuevoOrden) {
+                return "Ya existe un destino con el orden " + nuevoOrden + " en este viaje. Intercambie órdenes o use otro número.";
+            }
+        }
+
+        Viaje viaje = it.getViaje();
+        Destino destino = it.getDestino();
+
+        repositorioItinerario.delete(it);
+
+        Itinerario nuevo = new Itinerario(nuevoOrden, destino, viaje);
+        repositorioItinerario.save(nuevo);
+
+        return "Itinerario actualizado: orden del destino modificado correctamente de " + ordenActual + " a " + nuevoOrden;
     }
     
     @GetMapping("/obtenerDestino")
