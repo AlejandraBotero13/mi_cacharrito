@@ -40,7 +40,7 @@ public class Viaje {
     private String lugarSalida;
 
     @ManyToOne
-    @JoinColumn(name = "automovil_id", nullable = false)
+    @JoinColumn(name = "automovil_id", nullable = true)
     private Automovil automovil;
 
     public enum EstadoViaje {

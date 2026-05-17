@@ -79,13 +79,24 @@ public class controladoraAdministrador {
         return ResponseEntity.ok(admin);
     }
 
-    @DeleteMapping("/eliminar")
+   @DeleteMapping("/eliminar")
     public String eliminarAdministrador(@RequestParam("id") int id) {
-        if (repositorioAdministrador.existsById(id)) {
-            repositorioAdministrador.deleteById(id);
-            return "Administrador eliminado";
+        if (!repositorioAdministrador.existsById(id)) {
+            return "No existe administrador con id: " + id;
         }
-        return "No existe administrador con id: " + id;
+
+        List<Reserva> reservas = repositorioReserva.findByAdministradorId(id);
+        if (!reservas.isEmpty()) {
+           
+            for (Reserva r : reservas) {
+                r.setAdministrador(null);
+                repositorioReserva.save(r);
+            }
+           
+        }
+
+        repositorioAdministrador.deleteById(id);
+        return "Administrador eliminado y sus reservas han quedado sin administrador asociado.";
     }
 
     @PostMapping("/iniciarSesion")
@@ -101,14 +112,23 @@ public class controladoraAdministrador {
 
     // ========== VIAJES ==========
     @PostMapping("/crearViaje")
-    public ResponseEntity<?> crearViaje(@RequestParam("fecha") String fecha, @RequestParam("horaSalida") String horaSalida, @RequestParam("precio") BigDecimal precio, @RequestParam("lugarSalida") String lugarSalida) {
+    public ResponseEntity<?> crearViaje(@RequestParam("fecha") String fecha, @RequestParam("horaSalida") String horaSalida, @RequestParam("precio") BigDecimal precio, @RequestParam("lugarSalida") String lugarSalida,@RequestParam("idAuto") int idAuto) {
+
+            Optional<Automovil> auto = repositorioAutomovil.findById(idAuto);
+    if (auto.isEmpty()) {
+        return ResponseEntity.status(404).body("Automóvil no existe con id: " + idAuto);
+    }
+
         Viaje v = new Viaje();
         v.setFecha(LocalDate.parse(fecha));
         v.setHoraSalida(LocalTime.parse(horaSalida));
         v.setPrecio(precio);
+        v.setLugarSalida(lugarSalida);
+        v.setAutomovil(auto.get());
         v.setEstado(Viaje.EstadoViaje.activo);
         repositorioViaje.save(v);
         return ResponseEntity.ok(v);
+
     }
 
     @GetMapping("/listarViajes")
@@ -282,7 +302,7 @@ public class controladoraAdministrador {
     @PostMapping("/actualizarItinerario")
     public ResponseEntity<?> actualizarItinerario(@RequestBody Itinerario itinerario) {
         // La clave compuesta hace complicado el update directo, se delega a métodos específicos
-        return ResponseEntity.ok("Use /agregarDestino, /eliminarDestino, /actualizarOrden");
+        return ResponseEntity.ok("Itinerario actualizado.");
     }
 
     @DeleteMapping("/eliminarItinerario")
