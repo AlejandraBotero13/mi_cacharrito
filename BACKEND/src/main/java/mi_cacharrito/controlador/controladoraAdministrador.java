@@ -123,9 +123,17 @@ public class controladoraAdministrador {
 
     @DeleteMapping("/eliminarViaje")
     public String eliminarViaje(@RequestParam("id") int id) {
-        if (!repositorioViaje.existsById(id)) return "Viaje no existe";
+        if (!repositorioViaje.existsById(id)) {
+            return "Viaje no existe";
+        }
+
+        List<Itinerario> itinerarios = repositorioItinerario.findByViaje_Id(id);
+        if (!itinerarios.isEmpty()) {
+            return "No se puede eliminar el viaje porque tiene " + itinerarios.size() + " itinerarios asociados. Primero elimine el itinerario";
+        }
+
         repositorioViaje.deleteById(id);
-        return "Viaje eliminado";
+        return "Viaje eliminado correctamente";
     }
 
     // ========== RESERVAS ==========
