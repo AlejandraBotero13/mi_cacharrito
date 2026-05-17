@@ -44,14 +44,15 @@ public class controladoraDestino {
         return "Destino eliminado exitosamente";
     }
 
-    @PostMapping("/actualizarDescripcion")
-    public String actualizarDescripcion(@RequestParam("id") int id, @RequestParam("descripcion") String descripcion) {
+    @PostMapping("/actualizarDestino")
+    public String actualizarDestino(@RequestParam("id") int id, @RequestParam("nombre") String nombre, @RequestParam("descripcion") String descripcion) {
         if (!repositorioDestino.existsById(id))
             return "No existe un destino con el id: " + id;
         Destino d = repositorioDestino.findById(id).get();
+        d.setNombre(nombre);
         d.setDescripcion(descripcion);
         repositorioDestino.save(d);
-        return "Descripción actualizada exitosamente";
+        return "Destino actualizado exitosamente";
     }
 
     @GetMapping("/obtenerInformacion")
