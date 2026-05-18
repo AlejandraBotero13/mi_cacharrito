@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -177,19 +178,46 @@ public class controladoraAdministrador {
     // ========== RESERVAS ==========
     @PostMapping("/crearReserva")
     public ResponseEntity<?> crearReserva(@RequestParam("numAsiento") int numAsiento, @RequestParam("idViaje") int idViaje, @RequestParam("ccUsuario") String ccUsuario, @RequestParam("idAdmin") int idAdmin) {
-        Optional<Viaje> viaje = repositorioViaje.findById(idViaje);
-        Optional<Usuario> usuario = repositorioUsuario.findById(ccUsuario);
-        Optional<Administrador> admin = repositorioAdministrador.findById(idAdmin);
-        if (viaje.isEmpty() || usuario.isEmpty() || admin.isEmpty())
+
+        Optional<Viaje> viajeOpt = repositorioViaje.findById(idViaje);
+        Optional<Usuario> usuarioOpt = repositorioUsuario.findById(ccUsuario);
+        Optional<Administrador> adminOpt = repositorioAdministrador.findById(idAdmin);
+
+        if (viajeOpt.isEmpty() || usuarioOpt.isEmpty() || adminOpt.isEmpty()) {
             return ResponseEntity.status(404).body("Viaje, Usuario o Administrador no encontrado");
+        }
+
+        Viaje viaje = viajeOpt.get();
+        Usuario usuario = usuarioOpt.get();
+        Administrador admin = adminOpt.get();
+
+        if (viaje.getEstado() != Viaje.EstadoViaje.activo) {
+            return ResponseEntity.status(400).body("No se puede reservar en un viaje que no está activo");
+        }
+
+        if (viaje.getAutomovil() == null) {
+            return ResponseEntity.status(400).body("El viaje no tiene un automóvil asignado. No se puede reservar.");
+        }
+
+        int capacidad = viaje.getAutomovil().getCapacidad();
+        if (numAsiento < 1 || numAsiento > capacidad) {
+            return ResponseEntity.status(400).body("Este automovil solo tiene " + capacidad + " puestos.");
+        }
+
+        boolean asientoOcupado = repositorioReserva.existsByViajeYAsiento(idViaje, numAsiento);
+        if (asientoOcupado) {
+            return ResponseEntity.status(409).body("El puesto " + numAsiento + " ya está ocupado para este viaje");
+        }
+
         Reserva r = new Reserva();
         r.setNumeroAsiento(numAsiento);
         r.setFechaReserva(java.time.LocalDateTime.now());
         r.setEstado(Reserva.EstadoReserva.pendiente);
-        r.setUsuario(usuario.get());
-        r.setViaje(viaje.get());
-        r.setAdministrador(admin.get());
-        r.setTotalPagar(viaje.get().getPrecio());
+        r.setUsuario(usuario);
+        r.setViaje(viaje);
+        r.setAdministrador(admin);
+        r.setTotalPagar(viaje.getPrecio());
+
         repositorioReserva.save(r);
         return ResponseEntity.ok(r);
     }
@@ -200,11 +228,80 @@ public class controladoraAdministrador {
     }
 
     @PostMapping("/actualizarReserva")
-    public ResponseEntity<?> actualizarReserva(@RequestBody Reserva reserva) {
-        if (!repositorioReserva.existsById(reserva.getId()))
+    public ResponseEntity<?> actualizarReserva(@RequestParam("id") int id, @RequestParam(value = "numAsiento", required = false) Integer numAsiento, @RequestParam(value = "idViaje", required = false) Integer idViaje, @RequestParam(value = "estado", required = false) String estado, @RequestParam(value = "totalPagar", required = false) BigDecimal totalPagar) {
+
+        Optional<Reserva> reservaOpt = repositorioReserva.findById(id);
+        if (reservaOpt.isEmpty()) {
             return ResponseEntity.status(404).body("Reserva no existe");
-        repositorioReserva.save(reserva);
-        return ResponseEntity.ok(reserva);
+        }
+        Reserva reservaExistente = reservaOpt.get();
+
+        boolean asientoCambiado = false;
+        boolean viajeCambiado = false;
+        int nuevoAsiento = reservaExistente.getNumeroAsiento();
+        Integer nuevoIdViaje = reservaExistente.getViaje() != null ? reservaExistente.getViaje().getId() : null;
+
+        if (numAsiento != null && numAsiento != reservaExistente.getNumeroAsiento()) {
+            nuevoAsiento = numAsiento;
+            asientoCambiado = true;
+        }
+        if (idViaje != null && (reservaExistente.getViaje() == null || !idViaje.equals(reservaExistente.getViaje().getId()))) {
+            nuevoIdViaje = idViaje;
+            viajeCambiado = true;
+        }
+        if (estado != null) {
+            try {
+                reservaExistente.setEstado(Reserva.EstadoReserva.valueOf(estado));
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.status(400).body("Estado inválido. Valores permitidos: pendiente, pagada, finalizada, cancelada");
+            }
+        }
+        if (totalPagar != null && totalPagar.compareTo(BigDecimal.ZERO) > 0) {
+            reservaExistente.setTotalPagar(totalPagar);
+        }
+
+        if (asientoCambiado || viajeCambiado) {
+            Viaje viajeValidar;
+            if (viajeCambiado) {
+                Optional<Viaje> viajeOpt = repositorioViaje.findById(nuevoIdViaje);
+                if (viajeOpt.isEmpty()) {
+                    return ResponseEntity.status(404).body("El nuevo viaje no existe");
+                }
+                viajeValidar = viajeOpt.get();
+            } else {
+                viajeValidar = reservaExistente.getViaje();
+                if (viajeValidar == null) {
+                    return ResponseEntity.status(400).body("La reserva original no tiene un viaje asociado válido");
+                }
+            }
+
+            if (viajeValidar.getEstado() != Viaje.EstadoViaje.activo) {
+                return ResponseEntity.status(400).body("No se puede modificar la reserva porque el viaje no está activo");
+            }
+
+            if (viajeValidar.getAutomovil() == null) {
+                return ResponseEntity.status(400).body("El viaje no tiene un automóvil asignado.");
+            }
+
+            int capacidad = viajeValidar.getAutomovil().getCapacidad();
+            if (nuevoAsiento < 1 || nuevoAsiento > capacidad) {
+                return ResponseEntity.status(400).body("Este automovil solo tiene " + capacidad + " puestos.");
+            }
+
+            boolean ocupado = repositorioReserva.existsByViajeYAsientoActualizar(
+                    viajeValidar.getId(), nuevoAsiento, id);
+            if (ocupado) {
+                return ResponseEntity.status(409).body("El puesto " + nuevoAsiento + " ya está ocupado para este viaje");
+            }
+
+            reservaExistente.setNumeroAsiento(nuevoAsiento);
+            if (viajeCambiado) {
+                reservaExistente.setViaje(viajeValidar);
+            }
+        }
+
+        repositorioReserva.save(reservaExistente);
+        return ResponseEntity.ok(reservaExistente);
     }
 
     @DeleteMapping("/eliminarReserva")
