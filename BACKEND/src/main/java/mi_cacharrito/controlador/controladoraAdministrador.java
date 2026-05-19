@@ -328,6 +328,35 @@ public class controladoraAdministrador {
         return repositorioAutomovil.findAll();
     }
 
+    @GetMapping("/pasajerosViaje")
+    public ResponseEntity<?> pasajerosPorViaje(@RequestParam("idViaje") int idViaje) {
+        Optional<Viaje> viaje = repositorioViaje.findById(idViaje);
+        if (viaje.isEmpty()) 
+            return ResponseEntity.status(404).body("Viaje no existe");
+        
+        List<Map<String, Object>> pasajeros = new java.util.ArrayList<>();
+        
+        for (Reserva r : repositorioReserva.findByViajeId(idViaje)) {
+            if (r.getEstado() == Reserva.EstadoReserva.pagada || 
+                r.getEstado() == Reserva.EstadoReserva.finalizada) {
+                Map<String, Object> p = new HashMap<>();
+                p.put("nombre", r.getUsuario().getNombre());
+                p.put("apellido", r.getUsuario().getApellido());
+                p.put("asiento", r.getNumeroAsiento());
+                pasajeros.add(p);
+            }
+        }
+        
+        Map<String, Object> respuesta = new HashMap<>();
+        respuesta.put("viajeId", idViaje);
+        respuesta.put("fecha", viaje.get().getFecha().toString());
+        respuesta.put("lugarSalida", viaje.get().getLugarSalida());
+        respuesta.put("automovil", viaje.get().getAutomovil().getPlaca());
+        respuesta.put("pasajeros", pasajeros);
+        
+        return ResponseEntity.ok(respuesta);
+    }
+
     @PostMapping("/actualizarAutomovil")
     public ResponseEntity<?> actualizarAutomovil(@RequestBody Automovil auto) {
         if (!repositorioAutomovil.existsById(auto.getId()))
