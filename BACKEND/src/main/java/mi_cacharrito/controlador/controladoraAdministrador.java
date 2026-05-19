@@ -96,4 +96,14 @@ public class controladoraAdministrador {
                 .collect(Collectors.toList());
     }
 
+    @PostMapping("/cancelarReservacion")
+    public String cancelarReservacion(@RequestParam("idReserva") int idReserva) {
+        Optional<Reserva> opt = repositorioReserva.findById(idReserva);
+        if (opt.isEmpty()) return "Reserva no existe";
+        Reserva r = opt.get();
+        r.setEstado(Reserva.EstadoReserva.cancelada);
+        repositorioReserva.save(r);
+        return "Reserva cancelada";
+    }
+
 }
