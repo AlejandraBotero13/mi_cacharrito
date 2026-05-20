@@ -87,4 +87,19 @@ public class controladoraAutomovil {
         repositorioViaje.save(v);
         return ResponseEntity.ok("Viaje asignado al automóvil correctamente");
     }
+
+    @PostMapping("/actualizarAutomovil")
+    public ResponseEntity<?> actualizarAutomovil(@RequestParam("id") int id, @RequestParam("placa") String placa,@RequestParam("capacidad") int capacidad,@RequestParam("modelo") int modelo,@RequestParam("marca") String marca) {
+        Optional<Automovil> opt = repositorioAutomovil.findById(id);
+        if (opt.isEmpty()) {
+            return ResponseEntity.status(404).body("Automóvil no existe");
+    }
+    Automovil auto = opt.get();
+    auto.setPlaca(placa);
+    auto.setCapacidad(capacidad);
+    auto.setModelo(modelo);
+    auto.setMarca(marca);
+    repositorioAutomovil.save(auto);
+    return ResponseEntity.ok(auto);
+}
 }
