@@ -6,6 +6,8 @@ import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import mi_cacharrito.modelo.Viaje;
@@ -18,5 +20,7 @@ public interface viaje extends JpaRepository<Viaje, Integer> {
     public List<Viaje> findByEstado(Viaje.EstadoViaje estado);
     public List<Viaje> findByLugarSalida(String lugarSalida);
     List<Viaje> findByAutomovilId(int automovilId);
-
+    
+    @Query("SELECT DISTINCT v FROM Viaje v JOIN v.itinerarios i WHERE v.fecha = :fecha AND i.destino.id = :destinoId")
+    List<Viaje> findByFechaYDestino(@Param("fecha") LocalDate fecha, @Param("destinoId") int destinoId);
 }
