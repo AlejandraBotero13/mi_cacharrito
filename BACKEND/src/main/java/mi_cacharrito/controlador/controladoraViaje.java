@@ -103,4 +103,31 @@ public class controladoraViaje {
             return ResponseEntity.status(404).body("El viaje no tiene itinerario");
         return ResponseEntity.ok(lista);
     }
+<<<<<<< Updated upstream
+=======
+
+    @PostMapping("/actualizarViaje")
+    public ResponseEntity<?> actualizarViaje(@RequestParam("id") int id, @RequestParam("fecha") String fecha,@RequestParam("horaSalida") String horaSalida, @RequestParam("precio") BigDecimal precio, @RequestParam("lugarSalida") String lugarSalida, @RequestParam(value = "estado", required = false) String estado) {
+
+        Optional<Viaje> opt = repositorioViaje.findById(id);
+        if (opt.isEmpty()) {
+            return ResponseEntity.status(404).body("Viaje no existe");
+        }
+        Viaje v = opt.get();
+        v.setFecha(LocalDate.parse(fecha));
+        v.setHoraSalida(LocalTime.parse(horaSalida));
+        v.setPrecio(precio);
+        v.setLugarSalida(lugarSalida);
+        if (estado != null) {
+            try {
+                v.setEstado(Viaje.EstadoViaje.valueOf(estado.toLowerCase()));
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.status(400).body("Estado inválido (activo, cancelado, finalizado)");
+            }
+        }
+        repositorioViaje.save(v);
+        return ResponseEntity.ok(v);
+    }
+    
+>>>>>>> Stashed changes
 }
