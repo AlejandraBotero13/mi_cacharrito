@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -84,17 +84,13 @@ public class controladoraAdministrador {
         if (!repositorioAdministrador.existsById(id)) {
             return "No existe administrador con id: " + id;
         }
-
         List<Reserva> reservas = repositorioReserva.findByAdministradorId(id);
         if (!reservas.isEmpty()) {
-           
             for (Reserva r : reservas) {
                 r.setAdministrador(null);
                 repositorioReserva.save(r);
-            }
-           
+            } 
         }
-
         repositorioAdministrador.deleteById(id);
         return "Administrador eliminado y sus reservas han quedado sin administrador asociado.";
     }
@@ -161,8 +157,8 @@ public class controladoraAdministrador {
     }
 
     @PostMapping("/actualizarViaje")
-    public ResponseEntity<?> actualizarViaje(@RequestBody Viaje viaje) {
-        return controladoraViaje.actualizarViaje(viaje);
+    public ResponseEntity<?> actualizarViaje(@RequestParam int id, @RequestParam String fecha, @RequestParam String horaSalida, @RequestParam BigDecimal precio, @RequestParam String lugarSalida, @RequestParam(required = false) String estado) {
+        return controladoraViaje.actualizarViaje(id, fecha, horaSalida, precio, lugarSalida, estado);
     }
 
     @PostMapping("/crearAutomovil")
@@ -181,8 +177,8 @@ public class controladoraAdministrador {
     }
 
     @PostMapping("/actualizarAutomovil")
-    public ResponseEntity<?> actualizarAutomovil(@RequestBody Automovil automovil) {
-        return controladoraAutomovil.actualizarAutomovil(automovil);
+    public ResponseEntity<?> actualizarAutomovil(@RequestParam int id,@RequestParam String placa, @RequestParam int capacidad, @RequestParam int modelo, @RequestParam String marca) {
+        return controladoraAutomovil.actualizarAutomovil(id, placa, capacidad, modelo, marca);
     }
 
     @PostMapping("/crearDestino")
@@ -302,7 +298,6 @@ public class controladoraAdministrador {
         Optional<Viaje> viaje = repositorioViaje.findById(idViaje);
         if (viaje.isEmpty()) 
             return ResponseEntity.status(404).body("Viaje no existe");
-        
         List<Map<String, Object>> pasajeros = new java.util.ArrayList<>();
         
         for (Reserva r : repositorioReserva.findByViajeId(idViaje)) {
