@@ -1,9 +1,12 @@
 package mi_cacharrito.controlador;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import mi_cacharrito.modelo.Administrador;
+import mi_cacharrito.modelo.Automovil;
+import mi_cacharrito.modelo.Destino;
 import mi_cacharrito.modelo.Reserva;
+import mi_cacharrito.modelo.Usuario;
 import mi_cacharrito.modelo.Viaje;
 import mi_cacharrito.repositorio.administrador;
 import mi_cacharrito.repositorio.reserva;
@@ -37,7 +43,23 @@ public class controladoraAdministrador {
     @Autowired 
     private reserva repositorioReserva;
 
+    @Autowired 
+    private controladoraViaje controladoraViaje;
 
+    @Autowired 
+    private controladoraAutomovil controladoraAutomovil;
+
+    @Autowired 
+    private controladoraDestino controladoraDestino;
+
+    @Autowired 
+    private controladoraItinerario controladoraItinerario;
+
+    @Autowired 
+    private controladoraReserva controladoraReserva;
+
+    @Autowired 
+    private controladoraUsuario controladoraUsuario;
 
     @GetMapping("/listar")
     public List<Administrador> listarAdministradores() {
@@ -88,13 +110,125 @@ public class controladoraAdministrador {
         return ResponseEntity.status(401).body("Usuario o contraseña incorrectos");
     }
 
+    @PostMapping("/crearUsuario")
+    public ResponseEntity<Usuario> crearUsuario(@RequestBody Usuario usuario) {
+        return controladoraUsuario.guardar(usuario);
+    }
+
+    @GetMapping("/listarUsuario")
+    public List<Usuario> listarUsuario() {
+        return controladoraUsuario.listar();
+    }
+
+    @DeleteMapping("/eliminarUsuario")
+    public String eliminarUsuario(@RequestParam("cc") String cc) {
+        return controladoraUsuario.eliminar(cc);
+    }
+
+    @PostMapping("/actualizarUsuario")
+    public ResponseEntity<Usuario> actualizarUsuario(@RequestBody Usuario usuario) {
+        return controladoraUsuario.guardar(usuario);
+    }
+
+    @PostMapping("/crearReserva")
+    public ResponseEntity<?> crearReserva(@RequestParam int numAsiento, @RequestParam int idViaje, @RequestParam String ccUsuario,@RequestParam int idAdmin) {
+        return controladoraReserva.crearReservaConAdmin(numAsiento, idViaje, ccUsuario, idAdmin);
+    }
+
+    @GetMapping("/listarReservas")
+    public List<Reserva> listarReservas() {
+        return controladoraReserva.listarReservas();
+    }
+
+    @DeleteMapping("/eliminarReserva")
+    public String eliminarReserva(@RequestParam int id) {
+        return controladoraReserva.eliminarReserva(id);
+    }
+
+    @PostMapping("/crearViaje")
+    public ResponseEntity<?> crearViaje(@RequestParam String fecha, @RequestParam String horaSalida, @RequestParam BigDecimal precio, @RequestParam String lugarSalida) {
+        return controladoraViaje.crearViaje(fecha, horaSalida, precio, lugarSalida);
+    }
+
+    @GetMapping("/listarViajes")
+    public List<Viaje> listarViajes() {
+        return controladoraViaje.listarViajes();
+    }
+
+    @DeleteMapping("/eliminarViaje")
+    public String eliminarViaje(@RequestParam int id) {
+        return controladoraViaje.eliminarViaje(id);
+    }
+
+    @PostMapping("/actualizarViaje")
+    public ResponseEntity<?> actualizarViaje(@RequestBody Viaje viaje) {
+        return controladoraViaje.actualizarViaje(viaje);
+    }
+
+    @PostMapping("/crearAutomovil")
+    public ResponseEntity<?> crearAutomovil(@RequestParam String placa, @RequestParam int capacidad, @RequestParam int modelo, @RequestParam String marca) {
+        return controladoraAutomovil.crearAutomovil(placa, capacidad, modelo, marca);
+    }
+
+    @GetMapping("/listarAutomoviles")
+    public List<Automovil> listarAutomoviles() {
+        return controladoraAutomovil.listarAutomoviles();
+    }
+
+    @DeleteMapping("/eliminarAutomovil")
+    public String eliminarAutomovil(@RequestParam int id) {
+        return controladoraAutomovil.eliminarAutomovil(id);
+    }
+
+    @PostMapping("/actualizarAutomovil")
+    public ResponseEntity<?> actualizarAutomovil(@RequestBody Automovil automovil) {
+        return controladoraAutomovil.actualizarAutomovil(automovil);
+    }
+
+    @PostMapping("/crearDestino")
+    public String crearDestino(@RequestParam String nombre, @RequestParam String descripcion) {
+        return controladoraDestino.crearDestino(nombre, descripcion);
+    }
+
+    @GetMapping("/listarDestinos")
+    public List<Destino> listarDestinos() {
+        return controladoraDestino.listarDestinos();
+    }
+
+    @DeleteMapping("/eliminarDestino")
+    public String eliminarDestino(@RequestParam int id) {
+        return controladoraDestino.eliminarDestino(id);
+    }
+
+    @PostMapping("/actualizarDestino")
+    public String actualizarDestino(@RequestParam int id, @RequestParam String nombre, @RequestParam String descripcion) {
+        return controladoraDestino.actualizarDestino(id, nombre, descripcion);
+    }
+
+    @PostMapping("/crearItinerario")
+    public ResponseEntity<?> crearItinerario(@RequestParam int idViaje, @RequestParam int idDestino, @RequestParam short orden) {
+        return controladoraItinerario.crearItinerario(idViaje, idDestino, orden);
+    }
+
+    @GetMapping("/listarItinerarios")
+    public ResponseEntity<?> listarItinerarios(@RequestParam int idViaje) {
+        return controladoraItinerario.listarDestinos(idViaje);
+    }
+
+    @DeleteMapping("/eliminarItinerario")
+    public String eliminarItinerario(@RequestParam int idViaje) {
+        return controladoraItinerario.eliminarItinerario(idViaje);
+    }
+
+    @PostMapping("/actualizarItinerario")
+    public String actualizarItinerario(@RequestParam int idViaje, @RequestParam short ordenActual, @RequestParam short nuevoOrden) {
+        return controladoraItinerario.actualizarItinerario(idViaje, ordenActual, nuevoOrden);
+    }
 
     @GetMapping("/reservasDelDia")
     public List<Reserva> listarReservasDelDia() {
         LocalDate hoy = LocalDate.now();
-        return repositorioReserva.findAll().stream()
-                .filter(r -> r.getFechaReserva().toLocalDate().equals(hoy))
-                .collect(Collectors.toList());
+        return repositorioReserva.findAll().stream().filter(r -> r.getFechaReserva().toLocalDate().equals(hoy)).collect(Collectors.toList());
     }
 
     @PostMapping("/cancelarReservacion")
@@ -161,5 +295,34 @@ public class controladoraAdministrador {
         r.setEstado(Reserva.EstadoReserva.pagada);
         repositorioReserva.save(r);
         return "Pago registrado exitosamente";
+    }
+
+    @GetMapping("/pasajerosViaje")
+    public ResponseEntity<?> pasajerosPorViaje(@RequestParam("idViaje") int idViaje) {
+        Optional<Viaje> viaje = repositorioViaje.findById(idViaje);
+        if (viaje.isEmpty()) 
+            return ResponseEntity.status(404).body("Viaje no existe");
+        
+        List<Map<String, Object>> pasajeros = new java.util.ArrayList<>();
+        
+        for (Reserva r : repositorioReserva.findByViajeId(idViaje)) {
+            if (r.getEstado() == Reserva.EstadoReserva.pagada || 
+                r.getEstado() == Reserva.EstadoReserva.finalizada) {
+                Map<String, Object> p = new HashMap<>();
+                p.put("nombre", r.getUsuario().getNombre());
+                p.put("apellido", r.getUsuario().getApellido());
+                p.put("asiento", r.getNumeroAsiento());
+                pasajeros.add(p);
+            }
+        }
+        
+        Map<String, Object> respuesta = new HashMap<>();
+        respuesta.put("viajeId", idViaje);
+        respuesta.put("fecha", viaje.get().getFecha().toString());
+        respuesta.put("lugarSalida", viaje.get().getLugarSalida());
+        respuesta.put("automovil", viaje.get().getAutomovil().getPlaca());
+        respuesta.put("pasajeros", pasajeros);
+        
+        return ResponseEntity.ok(respuesta);
     }
 }
