@@ -105,8 +105,7 @@ public class controladoraViaje {
     }
 
     @PostMapping("/actualizarViaje")
-    public ResponseEntity<?> actualizarViaje(@RequestParam("id") int id, @RequestParam("fecha") String fecha,
-    @RequestParam("horaSalida") String horaSalida, @RequestParam("precio") BigDecimal precio, @RequestParam("lugarSalida") String lugarSalida, @RequestParam(value = "estado", required = false) String estado) {
+    public ResponseEntity<?> actualizarViaje(@RequestParam("id") int id, @RequestParam("fecha") String fecha, @RequestParam("horaSalida") String horaSalida, @RequestParam("precio") BigDecimal precio, @RequestParam("lugarSalida") String lugarSalida, @RequestParam(value = "estado", required = false) String estado) {
 
         Optional<Viaje> opt = repositorioViaje.findById(id);
         if (opt.isEmpty()) {
@@ -127,5 +126,4 @@ public class controladoraViaje {
         repositorioViaje.save(v);
         return ResponseEntity.ok(v);
     }
-    
 }
