@@ -23,6 +23,7 @@ public interface reserva extends JpaRepository<Reserva, Integer> {
     public List<Reserva> findByNumeroAsiento(int numeroAsiento);
     public List<Reserva> findByTotalPagar(BigDecimal totalPagar);
     
+    
     @Query("SELECT SUM(r.totalPagar) FROM Reserva r WHERE r.id = :id")
     BigDecimal calcularTotal(@Param("id") int id);
 
