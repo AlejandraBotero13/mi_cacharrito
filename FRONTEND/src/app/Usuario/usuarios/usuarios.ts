@@ -65,16 +65,26 @@ export class Usuarios implements OnInit {
       alert('Complete todos los campos');
       return;
     }
-    this.ServicioUsuario.guardarUsuario(this.usuario).subscribe(() => {
+    this.ServicioUsuario.guardarUsuario(this.usuario).subscribe(dato => {
+    if(dato !== null){  
+      console.log(dato)
       this.listarU();
       this.cerrarModal();
       this.usuario = new UsuarioEnt();
-    });
+      alert("Usuario guardado")
+    }else{
+      alert("No se registro el usuario")
+    }
+    })
   }
 
   eliminarUsuario(cc: string): void {
-    this.ServicioUsuario.eliminarUsuario(cc).subscribe(() => {
-      this.listarU();
+    this.ServicioUsuario.eliminarUsuario(cc).subscribe(dato => {
+      if (dato.includes('No se puede eliminar')) {
+        alert(dato);
+      } else {
+        this.listarU();
+      }
     });
   }
 
