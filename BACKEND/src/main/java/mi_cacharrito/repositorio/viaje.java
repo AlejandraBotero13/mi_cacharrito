@@ -19,7 +19,10 @@ public interface viaje extends JpaRepository<Viaje, Integer> {
     public List<Viaje> findByPrecio(BigDecimal  precio);
     public List<Viaje> findByEstado(Viaje.EstadoViaje estado);
     public List<Viaje> findByLugarSalida(String lugarSalida);
+
     List<Viaje> findByAutomovilId(int automovilId);
+    @Query("SELECT v.id, v.automovil.placa FROM Viaje v LEFT JOIN v.automovil")
+    List<Object[]> findIdYPlacaAutomovil();
     
     @Query("SELECT DISTINCT v FROM Viaje v JOIN v.itinerarios i WHERE v.fecha = :fecha AND i.destino.id = :destinoId")
     List<Viaje> findByFechaYDestino(@Param("fecha") LocalDate fecha, @Param("destinoId") int destinoId);
