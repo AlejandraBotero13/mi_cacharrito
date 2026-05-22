@@ -1,1 +1,76 @@
-<p>usuarios works!</p>
+<div class="container">
+    <h1>Lista de Usuarios</h1>
+    <hr>
+    <div class="busqueda-container">
+        <button class="btn-primary" (click)="abrirModal()">Registrar</button>
+        <hr>
+        <div class="search-group">
+            <input type="text" class="search-input" placeholder="Buscar Cedula" id="cedula">
+            <button>Buscar</button>
+        </div>
+    </div>
+    <hr>
+    <div class="contenedor-tabla">
+        <table class="tabla-usuarios">
+            <thead>
+                <tr>
+                    <th>Cedula</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Fecha de nacimiento</th>
+                    <th>Telefono</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(u of datosPaginados(); track u.cc){
+                    <tr>
+                        <td>{{ u.cc }}</td>
+                        <td>{{ u.nombre }}</td>
+                        <td>{{ u.apellido }}</td>
+                        <td>{{ u.fechaNacimiento }}</td>
+                        <td>{{ u.telefono }}</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" id="registro">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Registrar Usuario</h5>
+                <button class="btn-close" type="button" (click)="cerrarModal()" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label">Cedula</label>
+                        <input type="text" class="form-control" [(ngModel)]="usuario.cc" name="cc">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" class="form-control" [(ngModel)]="usuario.nombre" name="nombre">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Apellido</label>
+                        <input type="text" class="form-control" [(ngModel)]="usuario.apellido" name="apellido">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Fecha de Nacimiento</label>
+                        <input type="date" class="form-control" [(ngModel)]="usuario.fechaNacimiento" name="fechaNacimiento">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Telefono</label>
+                        <input type="text" class="form-control" [(ngModel)]="usuario.telefono" name="telefono">
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" (click)="cerrarModal()">Cerrar</button>
+                        <button class="btn btn-primary" type="button" (click)="guardarUsuario()">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
