@@ -29,6 +29,7 @@ import mi_cacharrito.modelo.Viaje;
 import mi_cacharrito.repositorio.administrador;
 import mi_cacharrito.repositorio.reserva;
 import mi_cacharrito.repositorio.viaje;
+import mi_cacharrito.util.EncryptionUtil;
 
 @RestController
 @RequestMapping("/administradores/a/")
@@ -65,20 +66,32 @@ public class controladoraAdministrador {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired 
+    private EncryptionUtil encryptionUtil;
+
     @GetMapping("/listar")
     public List<Administrador> listarAdministradores() {
-        return repositorioAdministrador.findAll();
+        List<Administrador> admins = repositorioAdministrador.findAll();
+        for (Administrador a : admins) {
+            a.setUsuario(encryptionUtil.decrypt(a.getUsuario()));
+        }
+        return admins;
     }
 
     @GetMapping("/buscarId")
     public ResponseEntity<?> buscarAdministradorPorId(@RequestParam("id") int id) {
         Optional<Administrador> admin = repositorioAdministrador.findById(id);
-        return admin.isPresent() ? ResponseEntity.ok(admin.get())
-                : ResponseEntity.status(404).body("No existe administrador con id: " + id);
+        if (admin.isPresent()) {
+            admin.get().setUsuario(encryptionUtil.decrypt(admin.get().getUsuario()));
+            return ResponseEntity.ok(admin.get());
+        } else {
+            return ResponseEntity.status(404).body("No existe administrador con id: " + id);
+        }
     }
 
     @PostMapping("/guardar")
     public ResponseEntity<Administrador> guardarAdministrador(@RequestBody Administrador admin) {
+        admin.setUsuario(encryptionUtil.encrypt(admin.getUsuario()));
         admin.setContraseña(passwordEncoder.encode(admin.getContraseña()));
         repositorioAdministrador.save(admin);
         return ResponseEntity.ok(admin);
@@ -101,11 +114,12 @@ public class controladoraAdministrador {
     }
 
     @PostMapping("/iniciarSesion")
-    public ResponseEntity<?> iniciarSesion(@RequestParam("usuario") String usuario,
-                                            @RequestParam("contraseña") String contraseña) {
-        List<Administrador> admins = repositorioAdministrador.findByUsuario(usuario);
+    public ResponseEntity<?> iniciarSesion(@RequestParam("usuario") String usuario, @RequestParam("contraseña") String contraseña) {
+        String usuarioEncriptado = encryptionUtil.encrypt(usuario);
+        List<Administrador> admins = repositorioAdministrador.findByUsuario(usuarioEncriptado);
         for (Administrador a : admins) {
             if (passwordEncoder.matches(contraseña, a.getContraseña())) {
+                a.setUsuario(encryptionUtil.decrypt(a.getUsuario()));
                 return ResponseEntity.ok(a);
             }
         }
