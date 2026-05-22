@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Fondo general para que se vea como la tabla (opcional) */
+body {
+    background: linear-gradient(145deg, #e9f0f5 0%, #d9e2ec 100%);
+    min-height: 100vh;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Barra de navegación simple */
+.nav {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(8px);
+    padding: 0.9rem 2rem;
+    border-bottom: 1px solid rgba(44, 76, 110, 0.15);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* Enlaces */
+.nav-link {
+    text-decoration: none;
+    color: #1e2f3f;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 0.5rem 0;
+    position: relative;
+    transition: color 0.2s ease;
+}
+
+/* Subrayado animado al hover (igual al diseño anterior) */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background: linear-gradient(90deg, #2c4c6e, #5a8bb3);
+    transition: width 0.25s ease;
+}
+
+.nav-link:hover {
+    color: #2c4c6e;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* Enlace activo (cuando la ruta coincide) */
+.nav-link.active {
+    color: #2c4c6e;
+    font-weight: 600;
+}
+
+.nav-link.active::after {
+    width: 100%;
+}
+
+/* Foco accesible */
+.nav-link:focus-visible {
+    outline: 2px solid #2c4c6e;
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+/* El router-outlet se encarga del contenido */
+router-outlet + * {
+    margin-top: 1.5rem;
+}
