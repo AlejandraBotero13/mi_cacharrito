@@ -3,7 +3,10 @@ package mi_cacharrito.controlador;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,5 +129,18 @@ public class controladoraViaje {
         }
         repositorioViaje.save(v);
         return ResponseEntity.ok(v);
+    }
+
+    @GetMapping("/idYPlaca")
+    public List<Map<String, Object>> idYPlaca() {
+        List<Object[]> resultado = repositorioViaje.findIdYPlacaAutomovil();
+        List<Map<String, Object>> lista = new ArrayList<>();
+        for (Object[] row : resultado) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", row[0]);
+            map.put("placa", row[1]);
+            lista.add(map);
+        }
+        return lista;
     }
 }
