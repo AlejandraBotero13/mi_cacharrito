@@ -2,11 +2,21 @@
     <h1>Lista de Usuarios</h1>
     <hr>
     <div class="busqueda-container">
-        <button class="btn-primary" (click)="abrirModal()">Registrar</button>
-        <hr>
+        <button class="btn-primary" (click)="abrirModal()">
+            Registrar
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-add" viewBox="0 0 16 16">
+                <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
+                <path d="M8.256 14a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z"/>
+            </svg>
+        </button>
         <div class="search-group">
-            <input type="text" class="search-input" placeholder="Buscar Cedula" id="cedula">
-            <button>Buscar</button>
+            <input type="text" placeholder="Buscar por cédula" id="cedula" class="search-input">
+            <button (click)="buscarUsuario()">
+                Buscar
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                </svg>
+            </button>
         </div>
     </div>
     <hr>
@@ -14,11 +24,12 @@
         <table class="tabla-usuarios">
             <thead>
                 <tr>
-                    <th>Cedula</th>
+                    <th>Cédula</th>
                     <th>Nombre</th>
                     <th>Apellido</th>
                     <th>Fecha de nacimiento</th>
-                    <th>Telefono</th>
+                    <th>Teléfono</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -29,10 +40,32 @@
                         <td>{{ u.apellido }}</td>
                         <td>{{ u.fechaNacimiento }}</td>
                         <td>{{ u.telefono }}</td>
+                        <td>
+                            <button class="btn btn-danger" (click)="eliminarUsuario(u.cc)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                                </svg>
+                            </button>
+                        </td>
                     </tr>
                 }
             </tbody>
         </table>
+
+        <div class="paginado">
+            <button class="btn btn-secondary" 
+                (click)="cambiarPagina(paginaActual() - 1)" 
+                [disabled]="paginaActual() === 1">
+                ⬅️ Anterior
+            </button>
+            <span>Página {{ paginaActual() }} de {{ totalPaginas() }}</span>
+            <button class="btn btn-secondary" 
+                (click)="cambiarPagina(paginaActual() + 1)" 
+                [disabled]="paginaActual() === totalPaginas()">
+                Siguiente ➡️
+            </button>
+        </div>
     </div>
 </div>
 
@@ -41,12 +74,18 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Registrar Usuario</h5>
-                <button class="btn-close" type="button" (click)="cerrarModal()" aria-label="Close"></button>
+                <button type="button" class="btn-close" (click)="cerrarModal()" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form>
                     <div class="mb-3">
-                        <label class="form-label">Cedula</label>
+                        <label class="form-label">
+                            Cédula
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-vcard" viewBox="0 0 16 16">
+                                <path d="M5 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4m4-2.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5M9 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4A.5.5 0 0 1 9 8m1 2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5"/>
+                                <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM1 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8.96q.04-.245.04-.5C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1 1 0 0 1 1 12z"/>
+                            </svg>
+                        </label>
                         <input type="text" class="form-control" [(ngModel)]="usuario.cc" name="cc">
                     </div>
                     <div class="mb-3">
@@ -62,7 +101,7 @@
                         <input type="date" class="form-control" [(ngModel)]="usuario.fechaNacimiento" name="fechaNacimiento">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Telefono</label>
+                        <label class="form-label">Teléfono</label>
                         <input type="text" class="form-control" [(ngModel)]="usuario.telefono" name="telefono">
                     </div>
                     <div class="modal-footer">

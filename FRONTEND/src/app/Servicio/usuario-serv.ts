@@ -1,7 +1,8 @@
+
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Usuario } from '../Usuario/usuarios/usuarios';
+import { UsuarioEnt } from '../Entidad/usuario-ent';
 
 @Injectable({
   providedIn: 'root'
@@ -12,16 +13,16 @@ export class UsuarioServ {
 
   constructor(private http: HttpClient) {}
 
-  listarUsuarios(): Observable<Usuario[]> {
-    return this.http.get<Usuario[]>(`${this.url}/listar`);
+  listarUsuarios(): Observable<UsuarioEnt[]> {
+    return this.http.get<UsuarioEnt[]>(`${this.url}/listar`);
   }
 
-  buscarPorCc(cc: string): Observable<Usuario> {
-    return this.http.get<Usuario>(`${this.url}/buscarCc`, { params: { cc } });
+  buscarPorCc(cc: string): Observable<UsuarioEnt> {
+    return this.http.get<UsuarioEnt>(`${this.url}/buscarCc`, { params: { cc } });
   }
 
-  guardarUsuario(usuario: Usuario): Observable<Usuario> {
-    return this.http.post<Usuario>(`${this.url}/guardar`, usuario);
+  guardarUsuario(usuario: UsuarioEnt): Observable<UsuarioEnt> {
+    return this.http.post<UsuarioEnt>(`${this.url}/guardar`, usuario);
   }
 
   eliminarUsuario(cc: string): Observable<string> {
