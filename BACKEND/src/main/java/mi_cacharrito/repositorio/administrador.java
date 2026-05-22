@@ -9,7 +9,7 @@ import mi_cacharrito.modelo.Administrador;
 
 @Repository
 public interface administrador extends JpaRepository<Administrador, Integer> {
-    public List<Administrador> findByNombre(String nombre);
-    public List<Administrador> findByContraseña(String contraseña);
-    public List<Administrador> findByUsuario(String usuario);
+    List<Administrador> findByUsuario(String usuario);
+    List<Administrador> findByNombre(String nombre);
+    List<Administrador> findByContraseña(String contraseña);
 }

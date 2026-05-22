@@ -93,13 +93,13 @@ public class controladoraAutomovil {
         Optional<Automovil> opt = repositorioAutomovil.findById(id);
         if (opt.isEmpty()) {
             return ResponseEntity.status(404).body("Automóvil no existe");
+        }
+        Automovil auto = opt.get();
+        auto.setPlaca(placa);
+        auto.setCapacidad(capacidad);
+        auto.setModelo(modelo);
+        auto.setMarca(marca);
+        repositorioAutomovil.save(auto);
+        return ResponseEntity.ok(auto);
     }
-    Automovil auto = opt.get();
-    auto.setPlaca(placa);
-    auto.setCapacidad(capacidad);
-    auto.setModelo(modelo);
-    auto.setMarca(marca);
-    repositorioAutomovil.save(auto);
-    return ResponseEntity.ok(auto);
-}
 }
