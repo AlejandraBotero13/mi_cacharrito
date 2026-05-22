@@ -1,15 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, OnInit, signal } from '@angular/core';
+import { Component, computed, OnInit, signal, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { UsuarioServ } from '../../Servicio/usuario-serv';
-
-export class Usuario {
-  cc: string = '';
-  nombre: string = '';
-  apellido: string = '';
-  fechaNacimiento: string = '';
-  telefono: string = '';
-}
+import { UsuarioEnt } from '../../Entidad/usuario-ent';
 
 @Component({
   selector: 'app-usuarios',
@@ -17,13 +10,31 @@ export class Usuario {
   imports: [FormsModule, CommonModule],
   templateUrl: './usuarios.html',
   styleUrl: './usuarios.css',
+  encapsulation: ViewEncapsulation.None
 })
 export class Usuarios implements OnInit {
-  usuarios = signal<Usuario[]>([]);
-  usuario: Usuario = new Usuario();
 
-  // Si no hay paginación real, datosPaginados retorna todos
-  datosPaginados = computed(() => this.usuarios());
+  usuarios = signal<UsuarioEnt[]>([]);
+  usuario: UsuarioEnt = new UsuarioEnt();
+
+  paginaActual = signal(1);
+  itemsPorPagina = 6;
+
+  datosPaginados = computed(() => {
+    const inicio = (this.paginaActual() - 1) * this.itemsPorPagina;
+    const fin = inicio + this.itemsPorPagina;
+    return this.usuarios().slice(inicio, fin);
+  });
+
+  totalPaginas = computed(() =>
+    Math.ceil(this.usuarios().length / this.itemsPorPagina)
+  );
+
+  cambiarPagina(nuevaPagina: number) {
+    if (nuevaPagina >= 1 && nuevaPagina <= this.totalPaginas()) {
+      this.paginaActual.set(nuevaPagina);
+    }
+  }
 
   constructor(private ServicioUsuario: UsuarioServ) {}
 
@@ -38,9 +49,9 @@ export class Usuarios implements OnInit {
   }
 
   abrirModal(): void {
-    this.usuario = new Usuario();
+    this.usuario = new UsuarioEnt();
     const modal = document.getElementById('registro');
-    if (modal) modal.style.display = 'block';
+    if (modal) modal.style.display = 'flex';
   }
 
   cerrarModal(): void {
@@ -49,9 +60,30 @@ export class Usuarios implements OnInit {
   }
 
   guardarUsuario(): void {
+    if (!this.usuario.cc || !this.usuario.nombre || !this.usuario.apellido ||
+        !this.usuario.fechaNacimiento || !this.usuario.telefono) {
+      alert('Complete todos los campos');
+      return;
+    }
     this.ServicioUsuario.guardarUsuario(this.usuario).subscribe(() => {
       this.listarU();
       this.cerrarModal();
+      this.usuario = new UsuarioEnt();
+    });
+  }
+
+  eliminarUsuario(cc: string): void {
+    this.ServicioUsuario.eliminarUsuario(cc).subscribe(() => {
+      this.listarU();
+    });
+  }
+
+  buscarUsuario(): void {
+    const cc = (document.getElementById('cedula') as HTMLInputElement).value;
+    if (!cc) return;
+    this.ServicioUsuario.buscarPorCc(cc).subscribe((dato: UsuarioEnt) => {
+      this.usuarios.set([dato]);
+      this.paginaActual.set(1);
     });
   }
 }
