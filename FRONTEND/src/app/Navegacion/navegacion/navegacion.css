@@ -6,41 +6,71 @@
     box-sizing: border-box;
 }
 
-/* Fondo general para que se vea como la tabla (opcional) */
 body {
-    background: linear-gradient(145deg, #e9f0f5 0%, #d9e2ec 100%);
+    background: #f4faf6;
     min-height: 100vh;
     font-family: 'Inter', system-ui, sans-serif;
 }
 
-/* Barra de navegación simple */
+/* ===============================================
+   NAVBAR
+   =============================================== */
 .nav {
     display: flex;
-    gap: 2rem;
-    justify-content: center;
     align-items: center;
-    background: rgba(255, 255, 255, 0.96);
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.97);
     backdrop-filter: blur(8px);
-    padding: 0.9rem 2rem;
-    border-bottom: 1px solid rgba(44, 76, 110, 0.15);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    padding: 0.85rem 2rem;
+    border-bottom: 1px solid rgba(26, 107, 74, 0.15);
+    box-shadow: 0 4px 20px rgba(26, 107, 74, 0.06);
     position: sticky;
     top: 0;
     z-index: 1000;
 }
 
-/* Enlaces */
-.nav-link {
+/* ===============================================
+   LOGO
+   =============================================== */
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
     text-decoration: none;
-    color: #1e2f3f;
-    font-weight: 500;
-    font-size: 1rem;
-    padding: 0.5rem 0;
-    position: relative;
-    transition: color 0.2s ease;
+    flex-shrink: 0;
 }
 
-/* Subrayado animado al hover (igual al diseño anterior) */
+.nav-logo svg {
+    flex-shrink: 0;
+}
+
+.nav-logo-text {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0f4a32;
+    letter-spacing: 0.3px;
+}
+
+/* ===============================================
+   LINKS
+   =============================================== */
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.8rem;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #1a2c1e;
+    font-weight: 500;
+    font-size: 0.9rem;
+    padding: 0.4rem 0;
+    position: relative;
+    transition: color 0.2s ease;
+    white-space: nowrap;
+}
+
 .nav-link::after {
     content: '';
     position: absolute;
@@ -48,21 +78,21 @@ body {
     left: 0;
     width: 0%;
     height: 2px;
-    background: linear-gradient(90deg, #2c4c6e, #5a8bb3);
+    background: linear-gradient(90deg, #1a6b4a, #2d9b6e);
+    border-radius: 2px;
     transition: width 0.25s ease;
 }
 
 .nav-link:hover {
-    color: #2c4c6e;
+    color: #1a6b4a;
 }
 
 .nav-link:hover::after {
     width: 100%;
 }
 
-/* Enlace activo (cuando la ruta coincide) */
 .nav-link.active {
-    color: #2c4c6e;
+    color: #1a6b4a;
     font-weight: 600;
 }
 
@@ -70,14 +100,16 @@ body {
     width: 100%;
 }
 
-/* Foco accesible */
 .nav-link:focus-visible {
-    outline: 2px solid #2c4c6e;
+    outline: 2px solid #1a6b4a;
     outline-offset: 4px;
     border-radius: 4px;
 }
 
-/* El router-outlet se encarga del contenido */
+/* ===============================================
+   CONTENIDO
+   =============================================== */
 router-outlet + * {
-    margin-top: 1.5rem;
+    display: block;
+    padding: 1.5rem 2rem;
 }
