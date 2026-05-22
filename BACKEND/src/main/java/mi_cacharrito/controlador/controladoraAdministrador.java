@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,6 +62,9 @@ public class controladoraAdministrador {
     @Autowired 
     private controladoraUsuario controladoraUsuario;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @GetMapping("/listar")
     public List<Administrador> listarAdministradores() {
         return repositorioAdministrador.findAll();
@@ -75,6 +79,7 @@ public class controladoraAdministrador {
 
     @PostMapping("/guardar")
     public ResponseEntity<Administrador> guardarAdministrador(@RequestBody Administrador admin) {
+        admin.setContraseña(passwordEncoder.encode(admin.getContraseña()));
         repositorioAdministrador.save(admin);
         return ResponseEntity.ok(admin);
     }
@@ -96,10 +101,11 @@ public class controladoraAdministrador {
     }
 
     @PostMapping("/iniciarSesion")
-    public ResponseEntity<?> iniciarSesion(@RequestParam("usuario") String usuario, @RequestParam("contraseña") String contraseña) {
+    public ResponseEntity<?> iniciarSesion(@RequestParam("usuario") String usuario,
+                                            @RequestParam("contraseña") String contraseña) {
         List<Administrador> admins = repositorioAdministrador.findByUsuario(usuario);
         for (Administrador a : admins) {
-            if (a.getContraseña().equals(contraseña)) {
+            if (passwordEncoder.matches(contraseña, a.getContraseña())) {
                 return ResponseEntity.ok(a);
             }
         }
