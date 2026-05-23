@@ -103,13 +103,14 @@ export class Administradores implements OnInit {
 
   abrirModalReservasDelDia(): void {
     this.reservasDelDia = [];
-    this.adminServ.listarReservasDelDia().subscribe({
-      next: data => {
+    this.adminServ.listarReservasDelDia().subscribe(
+      data => {
         this.reservasDelDia = data;
+        this.cdr.detectChanges();
         this.abrirModalId('modalReservasDelDia');
       },
-      error: () => alert('Error al obtener reservas del día')
-    });
+      () => alert('Error al obtener reservas del día')
+    );
   }
 
   cerrarModalReservasDelDia(): void {

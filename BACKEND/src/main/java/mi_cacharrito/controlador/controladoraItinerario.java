@@ -133,7 +133,5 @@ public class controladoraItinerario {
     @GetMapping("/listarOrdenado")
     public ResponseEntity<?> listarOrdenado() {
         return ResponseEntity.ok(repositorioItinerario.findAllOrdenadoPorViajeYOrden());
-}
-
-   
+    }
 }

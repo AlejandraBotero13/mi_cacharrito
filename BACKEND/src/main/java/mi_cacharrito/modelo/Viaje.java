@@ -3,6 +3,7 @@ package mi_cacharrito.modelo;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -11,6 +12,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -48,14 +50,13 @@ public class Viaje {
     @JoinColumn(name = "automovil_id", nullable = true)
     private Automovil automovil;
 
-    @OneToMany(mappedBy = "viaje")
-    private List<Itinerario> itinerarios;
+    @JsonIgnore
+    @OneToMany(mappedBy = "viaje", fetch = FetchType.LAZY)
+    private List<Itinerario> itinerarios = new ArrayList<>();
 
     public enum EstadoViaje {
         activo, cancelado, finalizado
     }
-
-    
 
     public Viaje(int id, LocalDate fecha, LocalTime horaSalida, BigDecimal precio, EstadoViaje estado, String lugarSalida, Automovil automovil) {
         this.id = id;
@@ -67,59 +68,69 @@ public class Viaje {
         this.automovil = automovil;
     }
 
-
     public Viaje() {}
 
     public int getId() { 
-        return id; }
+        return id; 
+    }
 
-
-    public void setId(int id) {
-         this.id = id; }
-
+    public void setId(int id) { 
+        this.id = id; 
+    }
 
     public LocalDate getFecha() { 
-        return fecha; }
+        return fecha; 
+    }
 
-
-    public void setFecha(LocalDate fecha) {
-         this.fecha = fecha; }
-
+    public void setFecha(LocalDate fecha) { 
+        this.fecha = fecha; 
+    }
 
     public LocalTime getHoraSalida() {
-         return horaSalida; }
-
+         return horaSalida; 
+    }
 
     public void setHoraSalida(LocalTime horaSalida) { 
-        this.horaSalida = horaSalida; }
+        this.horaSalida = horaSalida; 
+    }
 
-
-    public BigDecimal getPrecio() { 
-        return precio; }
-
+    public BigDecimal getPrecio() {
+         return precio; 
+    }
 
     public void setPrecio(BigDecimal precio) { 
-        this.precio = precio; }
+        this.precio = precio; 
+    }
 
-    public EstadoViaje getEstado() { 
-        return estado; }
+    public EstadoViaje getEstado() {
+         return estado; 
+    }
 
     public void setEstado(EstadoViaje estado) { 
-        this.estado = estado; }
+        this.estado = estado; 
+    }
 
-    public String getLugarSalida() { 
-        return lugarSalida; }
+    public String getLugarSalida() {
+         return lugarSalida; 
+    }
 
-    public void setLugarSalida(String lugarSalida) {
-        this.lugarSalida = lugarSalida;
+    public void setLugarSalida(String lugarSalida) { 
+        this.lugarSalida = lugarSalida; 
     }
 
     public Automovil getAutomovil() {
-         return automovil; }
+         return automovil; 
+    }
 
+    public void setAutomovil(Automovil automovil) { 
+        this.automovil = automovil; 
+    }
 
-    public void setAutomovil(Automovil automovil) {
-         this.automovil = automovil; }
+    public List<Itinerario> getItinerarios() {
+         return itinerarios; 
+    }
 
-
+    public void setItinerarios(List<Itinerario> itinerarios) { 
+        this.itinerarios = itinerarios; 
+    }
 }

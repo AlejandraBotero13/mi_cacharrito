@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import mi_cacharrito.modelo.Automovil;
 
-
 @Repository
 public interface automovil extends JpaRepository<Automovil, Integer> {
     List<Automovil> findByPlaca(String placa);

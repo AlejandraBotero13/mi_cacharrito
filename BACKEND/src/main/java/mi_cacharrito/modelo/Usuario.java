@@ -1,10 +1,11 @@
 package mi_cacharrito.modelo;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "usuario")
@@ -39,44 +40,43 @@ public class Usuario {
 
     }
 
-
     public String getCc() { 
-        return cc; }
-
+        return cc; 
+    }
 
     public void setCc(String cc) {
-         this.cc = cc; }
-
+         this.cc = cc; 
+    }
 
     public String getNombre() {
-         return nombre; }
-
+         return nombre; 
+    }
 
     public void setNombre(String nombre) {
-         this.nombre = nombre; }
-
+         this.nombre = nombre; 
+    }
 
     public String getApellido() { 
-        return apellido; }
-
+        return apellido; 
+    }
 
     public void setApellido(String apellido) { 
-        this.apellido = apellido; }
-
+        this.apellido = apellido; 
+    }
 
     public LocalDate getFechaNacimiento() { 
-        return fechaNacimiento; }
-
+        return fechaNacimiento; 
+    }
 
     public void setFechaNacimiento(LocalDate fechaNacimiento) {
-         this.fechaNacimiento = fechaNacimiento; }
-
+         this.fechaNacimiento = fechaNacimiento; 
+    }
 
     public String getTelefono() {
-         return telefono; }
-
+         return telefono; 
+    }
 
     public void setTelefono(String telefono) {
-         this.telefono = telefono; }
-         
+         this.telefono = telefono; 
+    }
 }
