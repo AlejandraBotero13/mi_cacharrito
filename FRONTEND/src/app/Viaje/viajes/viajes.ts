@@ -149,9 +149,9 @@ actualizarViaje(): void {
   }
 
   private cargarResumen(): void {
-  this.ServicioViaje.idYPlaca().subscribe(dato => {
-    this.viajesResumen.set(dato);
-  });
-}
-
+    this.ServicioViaje.idYPlaca().subscribe(dato => {
+      this.viajesResumen.set(dato);
+    });
+  }
+ 
 }
