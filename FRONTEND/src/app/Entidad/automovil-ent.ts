@@ -5,3 +5,4 @@ export class AutomovilEnt {
     modelo: number = 0;
     marca: string = '';
 }
+

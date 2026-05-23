@@ -1,6 +1,3 @@
-// ================================================
-// ENTIDAD: Administrador
-// ================================================
 export class AdministradorEnt {
   id?: number;
   nombre: string = '';
@@ -8,9 +5,6 @@ export class AdministradorEnt {
   contrasena: string = '';
 }
 
-// ================================================
-// ENTIDAD: Reserva
-// ================================================
 export class ReservaEnt {
   id?: number;
   numAsiento: number = 0;
@@ -22,9 +16,6 @@ export class ReservaEnt {
   fechaReserva?: string;
 }
 
-// ================================================
-// ENTIDAD: Viaje
-// ================================================
 export class ViajeEnt {
   id?: number;
   fecha: string = '';

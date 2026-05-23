@@ -98,3 +98,4 @@ export class Itinerarios implements OnInit {
     if (p >= 1 && p <= this.totalPaginas()) this.paginaActual.set(p);
   }
 }
+

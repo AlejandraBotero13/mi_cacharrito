@@ -3,3 +3,4 @@ export class ItinerarioEnt {
   destino: { id: number; nombre: string; descripcion: string } = { id: 0, nombre: '', descripcion: '' };
   viaje: { id: number; fecha: string; lugarSalida: string } = { id: 0, fecha: '', lugarSalida: '' };
 }
+
