@@ -153,4 +153,5 @@ actualizarViaje(): void {
     this.viajesResumen.set(dato);
   });
 }
+
 }

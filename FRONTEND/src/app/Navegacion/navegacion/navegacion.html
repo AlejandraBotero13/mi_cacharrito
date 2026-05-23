@@ -15,6 +15,16 @@
         <a href="/destinos" class="nav-link">Destinos</a>
         <a href="/automoviles" class="nav-link">Automóviles</a>
         <a href="/administradores" class="nav-link">Administradores</a>
+<<<<<<< Updated upstream
+=======
+
+        <button *ngIf="!isLoggedIn" class="btn-login" (click)="goToLogin()">
+        Iniciar sesión
+        </button>
+        <button *ngIf="isLoggedIn" class="btn-logout" (click)="logout()">
+        Cerrar sesión
+        </button>
+>>>>>>> Stashed changes
     </div>
 </nav>
 <router-outlet></router-outlet>
