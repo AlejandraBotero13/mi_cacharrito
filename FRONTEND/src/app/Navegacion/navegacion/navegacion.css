@@ -113,3 +113,20 @@ router-outlet + * {
     display: block;
     padding: 1.5rem 2rem;
 }
+
+.btn-login, .btn-logout {
+    background: white;
+    border: none;
+    padding: 0.4rem 1.2rem;
+    border-radius: 40px;
+    font-weight: 600;
+    margin-left: 1rem;
+    cursor: pointer;
+    font-family: inherit;
+}
+.btn-login { color: #1a6b4a; }
+.btn-logout { color: #c0392b; }
+.btn-login:hover, .btn-logout:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}

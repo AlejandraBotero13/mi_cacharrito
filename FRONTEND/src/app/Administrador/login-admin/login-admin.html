@@ -1,0 +1,17 @@
+<div class="login-container">
+  <div class="login-card">
+    <h2>Acceso Administradores</h2>
+    <form (ngSubmit)="iniciarSesion()">
+      <div class="mb-3">
+        <label class="form-label">Usuario</label>
+        <input type="text" class="form-control" [(ngModel)]="usuario" name="usuario" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Contraseña</label>
+        <input type="password" class="form-control" [(ngModel)]="clave" name="clave" required>
+      </div>
+      <button type="submit" class="btn-primary">Ingresar</button>
+    </form>
+    <div *ngIf="error" class="error-message">{{ error }}</div>
+  </div>
+</div>
