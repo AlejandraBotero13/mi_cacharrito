@@ -16,9 +16,6 @@ import { AdministradorEnt, ReservaEnt } from '../../Entidad/administrador-ent';
 })
 export class Administradores implements OnInit {
 
-  // ================================================
-  // SEÑALES Y PAGINACIÓN
-  // ================================================
   admins = signal<AdministradorEnt[]>([]);
   paginaActual = signal(1);
   itemsPorPagina = 5;
@@ -33,9 +30,6 @@ export class Administradores implements OnInit {
     Math.max(1, Math.ceil(this.admins().length / this.itemsPorPagina))
   );
 
-  // ================================================
-  // MODELOS DE MODALES
-  // ================================================
   cancelarReservaId: number = 0;
 
   modificarReservaData: any = {
@@ -51,9 +45,6 @@ export class Administradores implements OnInit {
 
   constructor(private adminServ: AdministradorServ,private router: Router,private cdr: ChangeDetectorRef) {}
 
-  // ================================================
-  // CICLO DE VIDA
-  // ================================================
   ngOnInit(): void {
     const sesion = localStorage.getItem('adminLogueado');
     if (!sesion) {
@@ -63,9 +54,6 @@ export class Administradores implements OnInit {
     }
   }
 
-  // ================================================
-  // HELPERS MODALES
-  // ================================================
   private abrirModalId(id: string): void {
     const modal = document.getElementById(id);
     if (modal) modal.style.display = 'flex';
@@ -76,9 +64,6 @@ export class Administradores implements OnInit {
     if (modal) modal.style.display = 'none';
   }
 
-  // ================================================
-  // ADMINISTRADORES
-  // ================================================
   listarAdmins(): void {
     this.adminServ.listar().subscribe({
       next: data => {
@@ -116,9 +101,6 @@ export class Administradores implements OnInit {
     this.router.navigate(['/login-admin']);
   }
 
-  // ================================================
-  // RESERVAS DEL DÍA
-  // ================================================
   abrirModalReservasDelDia(): void {
     this.reservasDelDia = [];
     this.adminServ.listarReservasDelDia().subscribe({
@@ -134,9 +116,6 @@ export class Administradores implements OnInit {
     this.cerrarModalId('modalReservasDelDia');
   }
 
-  // ================================================
-  // CANCELAR RESERVA
-  // ================================================
   abrirModalCancelarReserva(): void {
     this.cancelarReservaId = 0;
     this.abrirModalId('modalCancelarReserva');
@@ -162,9 +141,6 @@ export class Administradores implements OnInit {
     }
   }
 
-  // ================================================
-  // MODIFICAR RESERVA
-  // ================================================
   cargandoReserva: boolean = false;
 
   abrirModalModificarReserva(): void {
@@ -215,9 +191,6 @@ export class Administradores implements OnInit {
     });
   }
 
-  // ================================================
-  // REGISTRAR PAGO
-  // ================================================
   abrirModalRegistrarPago(): void {
     this.pagoReservaId = 0;
     this.abrirModalId('modalRegistrarPago');
@@ -241,9 +214,6 @@ export class Administradores implements OnInit {
     });
   }
 
-  // ================================================
-  // PASAJEROS POR VIAJE
-  // ================================================
   abrirModalPasajerosViaje(): void {
     this.viajeIdPasajeros = 0;
     this.pasajerosResultado = null;

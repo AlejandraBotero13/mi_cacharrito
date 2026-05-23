@@ -2,7 +2,7 @@
     <h1>Lista de Administradores</h1>
     <hr>
 
-    <!-- Barra superior: búsqueda + acciones principales -->
+    
     <div class="busqueda-container">
         <div class="search-group">
             <input type="text" placeholder="Buscar por ID" id="idAdmin" class="search-input">
@@ -19,7 +19,6 @@
     </div>
     <hr>
 
-    <!-- Botones de acciones de reservas -->
     <div class="acciones-container">
         <button class="btn-accion btn-dia" (click)="abrirModalReservasDelDia()">
             📅<span>Reservas del Día</span>
@@ -39,7 +38,6 @@
     </div>
     <hr>
 
-    <!-- Tabla de administradores -->
     <div class="contenedor-tabla">
         <table class="tabla-admin">
             <thead>
@@ -84,9 +82,6 @@
 </div>
 
 
-<!-- ================================================
-     MODAL: Reservas del Día
-     ================================================ -->
 <div class="modal" tabindex="-1" id="modalReservasDelDia">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -132,9 +127,6 @@
 </div>
 
 
-<!-- ================================================
-     MODAL: Cancelar Reserva
-     ================================================ -->
 <div class="modal" tabindex="-1" id="modalCancelarReserva">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -157,9 +149,6 @@
 </div>
 
 
-<!-- ================================================
-     MODAL: Modificar Reserva
-     ================================================ -->
 <div class="modal" tabindex="-1" id="modalModificarReserva">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -205,10 +194,6 @@
     </div>
 </div>
 
-
-<!-- ================================================
-     MODAL: Registrar Pago
-     ================================================ -->
 <div class="modal" tabindex="-1" id="modalRegistrarPago">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -232,9 +217,6 @@
 </div>
 
 
-<!-- ================================================
-     MODAL: Pasajeros por Viaje
-     ================================================ -->
 <div class="modal" tabindex="-1" id="modalPasajerosViaje">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

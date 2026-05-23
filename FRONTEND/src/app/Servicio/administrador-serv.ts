@@ -13,9 +13,6 @@ export class AdministradorServ {
 
   constructor(private http: HttpClient) {}
 
-  // ================================================
-  // ADMINISTRADORES
-  // ================================================
   listar(): Observable<AdministradorEnt[]> {
     return this.http.get<AdministradorEnt[]>(`${this.url}/listar`);
   }
@@ -30,9 +27,6 @@ export class AdministradorServ {
     });
   }
 
-  // ================================================
-  // RESERVAS
-  // ================================================
   listarReservasDelDia(): Observable<ReservaEnt[]> {
     return this.http.get<ReservaEnt[]>(`${this.url}/reservasDelDia`);
   }
@@ -49,9 +43,12 @@ export class AdministradorServ {
 
   modificarReserva(idReserva: number, numAsiento: number | null, idViaje: number | null, estado: string): Observable<any> {
     let params: any = { id: idReserva };
-    if (numAsiento !== null && numAsiento !== 0) params['numAsiento'] = numAsiento;
-    if (idViaje !== null && idViaje !== 0)       params['idViaje']    = idViaje;
-    if (estado)                                  params['estado']     = estado;
+    if (numAsiento !== null && numAsiento !== 0) 
+      params['numAsiento'] = numAsiento;
+    if (idViaje !== null && idViaje !== 0)       
+      params['idViaje']    = idViaje;
+    if (estado)                                  
+      params['estado']     = estado;
     return this.http.post<any>(`${this.urlReservas}/actualizarReserva`, null, { params });
   }
 
@@ -61,9 +58,6 @@ export class AdministradorServ {
     });
   }
 
-  // ================================================
-  // VIAJES
-  // ================================================
   listarViajes(): Observable<ViajeEnt[]> {
     return this.http.get<ViajeEnt[]>(`${this.url}/listarViajes`);
   }

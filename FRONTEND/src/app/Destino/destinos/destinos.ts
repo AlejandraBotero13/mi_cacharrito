@@ -39,7 +39,9 @@ export class Destinos implements OnInit {
   cargarDestinos(): void {
     this.destinoService.listarDestinos().subscribe(
       (data) => { this.destinos.set(data); },
-      () => {}
+      () => {
+
+      }
     );
   }
 
@@ -75,7 +77,9 @@ export class Destinos implements OnInit {
     if (!confirm('¿Eliminar este destino?')) return;
     this.destinoService.eliminarDestino(id).subscribe(
       () => { this.cargarDestinos(); },
-      () => {}
+      () => {
+        
+      }
     );
   }
 
@@ -90,10 +94,10 @@ export class Destinos implements OnInit {
     }
   }
 
-  // Propiedades
+  
 busquedaId: string = '';
 
-// Método
+
 buscarPorId(): void {
   const id = Number(this.busquedaId);
   if (!this.busquedaId || isNaN(id)) {
@@ -106,7 +110,10 @@ buscarPorId(): void {
       this.destinos.set(resultado);
       this.paginaActual.set(1);
     },
-    () => {}
+    () => {
+
+    }
   );
 }
 }
+

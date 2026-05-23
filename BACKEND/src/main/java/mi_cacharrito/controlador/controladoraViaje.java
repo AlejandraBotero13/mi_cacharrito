@@ -63,7 +63,7 @@ public class controladoraViaje {
         return repositorioViaje.findAll();
     }
 
-    // ✅ FIX: captura excepción de FK y retorna 409 con mensaje legible
+    
     @DeleteMapping("/eliminarViaje")
     public ResponseEntity<String> eliminarViaje(@RequestParam("id") int id) {
         if (!repositorioViaje.existsById(id))
@@ -165,4 +165,12 @@ public class controladoraViaje {
         }
         return lista;
     }
+
+    @GetMapping("/buscarViaje")
+    public ResponseEntity<?> buscarViaje(@RequestParam("id") int id) {
+    Optional<Viaje> opt = repositorioViaje.findById(id);
+    if (opt.isEmpty()) return ResponseEntity.status(404).body("Viaje no encontrado");
+    return ResponseEntity.ok(opt.get());
+}
+    
 }
