@@ -29,3 +29,4 @@ export class UsuarioServ {
     return this.http.delete(`${this.url}/eliminar`, { params: { cc }, responseType: 'text' });
   }
 }
+

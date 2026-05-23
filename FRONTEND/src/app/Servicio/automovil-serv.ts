@@ -55,7 +55,7 @@ export class AutomovilServ {
     return this.http.get<AutomovilEnt[]>(`${this.apiUrl}/enViaje`);
   }
 
-estadoPorFecha(fecha: string): Observable<any[]> {
+  estadoPorFecha(fecha: string): Observable<any[]> {
   return this.http.get<any[]>(`${this.apiUrl}/estadoPorFecha`, {
     params: new HttpParams().set('fecha', fecha)
   });

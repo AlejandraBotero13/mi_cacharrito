@@ -37,8 +37,10 @@ export class ViajeServ {
   }
 
   buscarPorId(id: number): Observable<ViajeEnt> {
-    return this.http.get<ViajeEnt>(`${this.url}/buscarViaje/${id}`);
-  }
+  return this.http.get<ViajeEnt>(`${this.url}/buscarViaje`, {
+    params: { id }
+  });
+}
 
   asignarAutomovil(idViaje: number, idAuto: number): Observable<string> {
     return this.http.post(`${this.url}/asignarAutomovil`, null, {
@@ -46,6 +48,7 @@ export class ViajeServ {
       responseType: 'text'
     });
   }
+
   idYPlaca(): Observable<ViajeResumen[]> {
   return this.http.get<ViajeResumen[]>(`${this.url}/idYPlaca`);
 }
@@ -62,5 +65,7 @@ actualizarViaje(id: number, viaje: ViajeEnt): Observable<ViajeEnt> {
     }
   });
 }
+
+
 
 }
