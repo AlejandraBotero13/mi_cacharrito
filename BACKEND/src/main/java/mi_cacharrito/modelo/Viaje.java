@@ -49,7 +49,7 @@ public class Viaje {
     private List<Itinerario> itinerarios;
 
     public enum EstadoViaje {
-        activo, cancelado, finalizado,
+        activo, cancelado, finalizado
     }
 
     

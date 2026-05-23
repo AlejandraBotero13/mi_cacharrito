@@ -47,46 +47,47 @@ export class Viajes implements OnInit {
     });
   }
 
-abrirModalEdicion(v: ViajeEnt): void {
-  this.viaje = { ...v };
-  this.idAutoSeleccionado = v.automovil?.id ?? null;
-  this.esEdicion.set(true);
-  const modal = document.getElementById('registro');
-  if (modal) modal.style.display = 'flex';
-}
-
-abrirModal(): void {
-  this.viaje = new ViajeEnt();
-  this.idAutoSeleccionado = null;
-  this.esEdicion.set(false);
-  const modal = document.getElementById('registro');
-  if (modal) modal.style.display = 'flex';
-}
-
-cerrarModal(): void {
-  const modal = document.getElementById('registro');
-  if (modal) modal.style.display = 'none';
-  this.viaje = new ViajeEnt();
-  this.idAutoSeleccionado = null;
-  this.esEdicion.set(false);
-}
-
-actualizarViaje(): void {
-  if (!this.viaje.fecha || !this.viaje.horaSalida || !this.viaje.precio ||
-      !this.viaje.estado || !this.viaje.lugarSalida) {
-    alert('Complete todos los campos');
-    return;
+  abrirModalEdicion(v: ViajeEnt): void {
+    this.viaje = { ...v };
+    this.idAutoSeleccionado = v.automovil?.id ?? null;
+    this.esEdicion.set(true);
+    const modal = document.getElementById('registro');
+    if (modal) modal.style.display = 'flex';
   }
-  this.ServicioViaje.actualizarViaje(this.viaje.id, this.viaje).subscribe(dato => {
-    if (dato) {
-      this.listarViajes();
-      this.cerrarModal();
-      alert('Viaje actualizado');
-    } else {
-      alert('No se pudo actualizar');
+
+  abrirModal(): void {
+    this.viaje = new ViajeEnt();
+    this.idAutoSeleccionado = null;
+    this.esEdicion.set(false);
+    const modal = document.getElementById('registro');
+    if (modal) modal.style.display = 'flex';
+  }
+
+  cerrarModal(): void {
+    const modal = document.getElementById('registro');
+    if (modal) modal.style.display = 'none';
+    this.viaje = new ViajeEnt();
+    this.idAutoSeleccionado = null;
+    this.esEdicion.set(false);
+  }
+
+  actualizarViaje(): void {
+    if (!this.viaje.fecha || !this.viaje.horaSalida || !this.viaje.precio ||
+        !this.viaje.estado || !this.viaje.lugarSalida) {
+      alert('Complete todos los campos');
+      return;
     }
-  });
-}
+    this.ServicioViaje.actualizarViaje(this.viaje.id, this.viaje).subscribe(dato => {
+      if (dato) {
+        this.listarViajes();
+        this.cerrarModal();
+        alert('Viaje actualizado');
+      } else {
+        alert('No se pudo actualizar');
+      }
+    });
+  }
+
   guardarViaje(): void {
     if (!this.viaje.fecha || !this.viaje.horaSalida || !this.viaje.precio ||
         !this.viaje.estado || !this.viaje.lugarSalida) {
@@ -108,14 +109,16 @@ actualizarViaje(): void {
     });
   }
 
+  // ✅ FIX: manejo correcto de errores HTTP
   eliminarViaje(id: number): void {
     if (confirm('¿Está seguro de eliminar este viaje?')) {
-      this.ServicioViaje.eliminarViaje(id).subscribe(dato => {
-        if (dato && dato.includes('No se puede eliminar')) {
+      this.ServicioViaje.eliminarViaje(id).subscribe({
+        next: (dato) => {
           alert(dato);
-        } else {
-          alert('Viaje eliminado');
           this.listarViajes();
+        },
+        error: (err) => {
+          alert(err.error || 'No se puede eliminar el viaje');
         }
       });
     }
@@ -123,13 +126,13 @@ actualizarViaje(): void {
 
   buscarViaje(): void {
     const idInput = (document.getElementById('id') as HTMLInputElement).value;
-    
+
     if (!idInput) {
       this.listarViajes();
       this.paginaActual.set(1);
       return;
     }
-    
+
     const id = Number(idInput);
     this.ServicioViaje.buscarPorId(id).subscribe(viaje => {
       if (viaje && viaje.id) {
@@ -149,8 +152,8 @@ actualizarViaje(): void {
   }
 
   private cargarResumen(): void {
-  this.ServicioViaje.idYPlaca().subscribe(dato => {
-    this.viajesResumen.set(dato);
-  });
-}
+    this.ServicioViaje.idYPlaca().subscribe(dato => {
+      this.viajesResumen.set(dato);
+    });
+  }
 }

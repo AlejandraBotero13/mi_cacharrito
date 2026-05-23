@@ -84,6 +84,7 @@ hr {
     border: 1px solid var(--borde);
 }
 
+.search-input,
 .search-group input {
     background: var(--blanco);
     border: none;
@@ -96,6 +97,7 @@ hr {
     color: var(--texto);
 }
 
+.search-input::placeholder,
 .search-group input::placeholder {
     color: #a0b8a8;
 }
@@ -130,6 +132,65 @@ hr {
 }
 
 /* ===============================================
+   ACCIONES DE RESERVAS
+   =============================================== */
+.acciones-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 0.5rem 0;
+}
+
+.btn-accion {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1.2rem;
+    border-radius: 40px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.btn-dia {
+    background: #e8f5ef;
+    color: var(--primario-dark);
+    border-color: var(--borde);
+}
+.btn-dia:hover { background: var(--primario); color: var(--blanco); }
+
+.btn-cancelar {
+    background: #fff0f0;
+    color: #c0392b;
+    border-color: #f5c6c6;
+}
+.btn-cancelar:hover { background: #c0392b; color: var(--blanco); }
+
+.btn-modificar {
+    background: #fff8e6;
+    color: #a06000;
+    border-color: #f5dfa0;
+}
+.btn-modificar:hover { background: var(--acento); color: var(--blanco); }
+
+.btn-pago {
+    background: #eaf3ff;
+    color: #1a5fa0;
+    border-color: #b8d4f5;
+}
+.btn-pago:hover { background: #1a5fa0; color: var(--blanco); }
+
+.btn-pasajeros {
+    background: #f3eaff;
+    color: #5a1a90;
+    border-color: #d4b8f5;
+}
+.btn-pasajeros:hover { background: #5a1a90; color: var(--blanco); }
+
+/* ===============================================
    CONTENEDOR TABLA
    =============================================== */
 .contenedor-tabla {
@@ -137,7 +198,7 @@ hr {
 }
 
 /* ===============================================
-   TABLA
+   TABLA PRINCIPAL
    =============================================== */
 table {
     font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -192,6 +253,107 @@ th:last-child {
 td:first-child {
     font-weight: 500;
     color: var(--primario-dark);
+}
+
+/* ===============================================
+   TABLA MODAL
+   =============================================== */
+.tabla-modal {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.tabla-modal th {
+    background: linear-gradient(135deg, var(--primario) 0%, var(--primario-dark) 100%);
+    color: var(--blanco);
+    padding: 0.65rem 1rem;
+    font-weight: 600;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.tabla-modal td {
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid #edf5f0;
+    color: var(--texto);
+    background: var(--blanco);
+}
+
+.tabla-modal tr:last-child td {
+    border-bottom: none;
+}
+
+.tabla-modal tr:hover td {
+    background: var(--primario-light);
+    transform: none;
+    box-shadow: none;
+}
+
+/* ===============================================
+   BADGES DE ESTADO
+   =============================================== */
+.badge-estado {
+    display: inline-block;
+    padding: 0.25rem 0.7rem;
+    border-radius: 40px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.badge-pendiente  { background: #fff8e6; color: #a06000; border: 1px solid #f5dfa0; }
+.badge-pagada     { background: #e8f5ef; color: var(--primario-dark); border: 1px solid var(--borde); }
+.badge-finalizada { background: #eaf3ff; color: #1a5fa0; border: 1px solid #b8d4f5; }
+.badge-cancelada  { background: #fff0f0; color: #c0392b; border: 1px solid #f5c6c6; }
+
+/* ===============================================
+   RESULTADO PASAJEROS
+   =============================================== */
+.resultado-viaje {
+    margin-top: 1rem;
+}
+
+.viaje-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    background: var(--primario-light);
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.88rem;
+    color: var(--primario-dark);
+}
+
+.texto-vacio {
+    text-align: center;
+    color: #888;
+    padding: 1.5rem 0;
+    font-size: 0.9rem;
+}
+
+/* ===============================================
+   BUSCAR VIAJE ROW
+   =============================================== */
+.buscar-viaje-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.75rem;
+}
+
+.input-wrap {
+    flex: 1;
+}
+
+.buscar-btn {
+    flex-shrink: 0;
+    margin-bottom: 0;
+    white-space: nowrap;
 }
 
 /* ===============================================
@@ -330,9 +492,9 @@ td:first-child {
 }
 
 /* ===============================================
-   MODAL #registro
+   MODALES
    =============================================== */
-#registro {
+.modal {
     display: none;
     position: fixed;
     inset: 0;
@@ -342,20 +504,30 @@ td:first-child {
     align-items: center;
 }
 
-#registro .modal-dialog {
+.modal .modal-dialog {
     width: 90%;
     max-width: 500px;
     margin: auto;
+    animation: modalSlideIn 0.25s ease;
 }
 
-#registro .modal-content {
+.modal .modal-dialog.modal-lg {
+    max-width: 780px;
+}
+
+@keyframes modalSlideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to   { transform: translateY(0);     opacity: 1; }
+}
+
+.modal .modal-content {
     background: var(--blanco);
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
 }
 
-#registro .modal-header {
+.modal .modal-header {
     background: linear-gradient(135deg, var(--primario) 0%, var(--primario-dark) 100%);
     color: var(--blanco);
     padding: 1.2rem 1.5rem;
@@ -364,30 +536,36 @@ td:first-child {
     align-items: center;
 }
 
-#registro .modal-title {
+.modal .modal-title {
     font-size: 1.1rem;
     font-weight: 600;
     letter-spacing: 0.3px;
     margin: 0;
 }
 
-#registro .btn-close {
-    filter: invert(1);
-    opacity: 0.9;
-    cursor: pointer;
+.modal .btn-close {
     background: none;
     border: none;
+    color: var(--blanco);
+    font-size: 1.1rem;
+    line-height: 1;
+    padding: 0.2rem 0.5rem;
+    cursor: pointer;
+    opacity: 0.85;
+    font-family: inherit;
+    border-radius: 4px;
+    transition: opacity 0.2s;
 }
 
-#registro .btn-close:hover {
+.modal .btn-close:hover {
     opacity: 1;
 }
 
-#registro .modal-body {
+.modal .modal-body {
     padding: 1.5rem;
 }
 
-#registro .modal-footer {
+.modal .modal-footer {
     padding: 1rem 1.5rem;
     display: flex;
     justify-content: flex-end;
@@ -395,8 +573,82 @@ td:first-child {
     border-top: 1px solid var(--borde);
 }
 
+.modal .btn-primary {
+    background: linear-gradient(135deg, var(--primario) 0%, var(--primario-dark) 100%);
+    color: var(--blanco);
+    border: none;
+    padding: 0.55rem 1.4rem;
+    border-radius: 40px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: 0.2s;
+}
+
+.modal .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(26, 107, 74, 0.3);
+}
+
+.modal .btn-secondary {
+    background: var(--blanco);
+    color: var(--texto-sec);
+    border: 1px solid var(--borde);
+    padding: 0.55rem 1.4rem;
+    border-radius: 40px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: 0.2s;
+}
+
+.modal .btn-secondary:hover {
+    background: var(--primario-light);
+    border-color: var(--primario);
+    color: var(--primario-dark);
+}
+
+.modal .btn-danger {
+    background-color: #fff0f0;
+    color: #c0392b;
+    border: 1px solid #f5c6c6;
+    padding: 0.55rem 1.4rem;
+    border-radius: 40px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: 0.2s;
+}
+
+.modal .btn-danger:hover {
+    background-color: #c0392b;
+    color: var(--blanco);
+    border-color: #c0392b;
+}
+
+.modal .btn-success {
+    background: linear-gradient(135deg, var(--primario) 0%, var(--primario-dark) 100%);
+    color: var(--blanco);
+    border: none;
+    padding: 0.55rem 1.4rem;
+    border-radius: 40px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: 0.2s;
+}
+
+.modal .btn-success:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(26, 107, 74, 0.3);
+}
+
 /* ===============================================
-   FORMULARIO DENTRO DEL MODAL
+   FORMULARIOS
    =============================================== */
 .form-label {
     display: inline-flex;
@@ -406,6 +658,17 @@ td:first-child {
     font-weight: 500;
     color: var(--texto-sec);
     margin-bottom: 0.4rem;
+}
+
+.requerido {
+    color: #c0392b;
+    font-weight: 700;
+}
+
+.opcional {
+    color: #999;
+    font-size: 0.78rem;
+    font-weight: 400;
 }
 
 .form-control {
@@ -419,6 +682,7 @@ td:first-child {
     background: var(--blanco);
     transition: border-color 0.2s, box-shadow 0.2s;
     outline: none;
+    box-sizing: border-box;
 }
 
 .form-control:focus {
@@ -430,42 +694,12 @@ td:first-child {
     margin-bottom: 1rem;
 }
 
-/* ===============================================
-   BOTONES PRIMARIO Y SECUNDARIO EN MODAL
-   =============================================== */
-#registro .btn-primary {
-    background: linear-gradient(135deg, var(--primario) 0%, var(--primario-dark) 100%);
-    color: var(--blanco);
-    border: none;
-    padding: 0.55rem 1.4rem;
-    border-radius: 40px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
-    transition: 0.2s;
-}
-
-#registro .btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(26, 107, 74, 0.3);
-}
-
-#registro .btn-secondary {
-    background: var(--blanco);
+.modal-desc {
+    font-size: 0.88rem;
     color: var(--texto-sec);
-    border: 1px solid var(--borde);
-    padding: 0.55rem 1.4rem;
-    border-radius: 40px;
-    font-size: 0.85rem;
-    font-weight: 500;
-    cursor: pointer;
-    font-family: inherit;
-    transition: 0.2s;
-}
-
-#registro .btn-secondary:hover {
+    margin-bottom: 1rem;
     background: var(--primario-light);
-    border-color: var(--primario);
-    color: var(--primario-dark);
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    padding: 0.6rem 0.9rem;
 }
