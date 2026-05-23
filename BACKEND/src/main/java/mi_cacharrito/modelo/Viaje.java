@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -41,6 +43,7 @@ public class Viaje {
     @Column(name = "lugar_salida", length = 100)
     private String lugarSalida;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "automovil_id", nullable = true)
     private Automovil automovil;

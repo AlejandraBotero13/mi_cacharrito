@@ -156,4 +156,8 @@ export class Viajes implements OnInit {
       this.viajesResumen.set(dato);
     });
   }
+  this.ServicioViaje.idYPlaca().subscribe(dato => {
+    this.viajesResumen.set(dato);
+  });
+}
 }

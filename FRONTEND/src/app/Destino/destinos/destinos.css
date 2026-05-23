@@ -1,0 +1,489 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&display=swap');
+
+/* ===============================================
+   VARIABLES
+   =============================================== */
+:root {
+    --primario: #1a6b4a;
+    --primario-dark: #0f4a32;
+    --primario-light: #e8f5ef;
+    --acento: #f0a500;
+    --acento-dark: #c47e00;
+    --texto: #1a2c1e;
+    --texto-sec: #4a6b52;
+    --borde: #d4e8da;
+    --fondo: #f4faf6;
+    --blanco: #ffffff;
+    --sombra: rgba(26, 107, 74, 0.08);
+}
+
+/* ===============================================
+   CONTENEDOR PRINCIPAL
+   =============================================== */
+.container {
+    padding: 2rem;
+    background: var(--fondo);
+    min-height: 100vh;
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+h1 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--primario-dark);
+    letter-spacing: 0.3px;
+    margin-bottom: 0.5rem;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid var(--borde);
+    margin: 1rem 0;
+}
+
+/* ===============================================
+   BARRA DE BÚSQUEDA Y ACCIONES
+   =============================================== */
+.busqueda-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.busqueda-container .btn-primary {
+    background: linear-gradient(135deg, var(--primario) 0%, var(--primario-dark) 100%);
+    color: var(--blanco);
+    border: none;
+    font-weight: 600;
+    padding: 0.6rem 1.5rem;
+    border-radius: 40px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: inherit;
+}
+
+.busqueda-container .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(26, 107, 74, 0.3);
+}
+
+.search-group {
+    display: flex;
+    align-items: stretch;
+    background: var(--blanco);
+    border-radius: 40px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px var(--sombra);
+    border: 1px solid var(--borde);
+}
+
+.search-group input {
+    background: var(--blanco);
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    font-family: inherit;
+    width: 220px;
+    outline: none;
+    border-radius: 40px 0 0 40px;
+    color: var(--texto);
+}
+
+.search-group input::placeholder {
+    color: #a0b8a8;
+}
+
+.search-group input:focus {
+    box-shadow: inset 0 0 0 2px rgba(26, 107, 74, 0.2);
+}
+
+.search-group button {
+    background: linear-gradient(135deg, var(--primario) 0%, var(--primario-dark) 100%);
+    border: none;
+    padding: 0.5rem 1.2rem;
+    font-weight: 500;
+    font-size: 0.85rem;
+    color: var(--blanco);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+    transition: 0.2s;
+    font-family: inherit;
+    border-radius: 0 40px 40px 0;
+}
+
+.search-group button:hover {
+    background: linear-gradient(135deg, var(--primario-dark) 0%, var(--primario) 100%);
+    transform: translateY(-1px);
+}
+
+.search-group button svg {
+    fill: var(--blanco);
+}
+
+/* ===============================================
+   CONTENEDOR TABLA
+   =============================================== */
+.contenedor-tabla {
+    margin-top: 1rem;
+}
+
+/* ===============================================
+   TABLA
+   =============================================== */
+table {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--blanco);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px var(--sombra);
+    font-size: 0.95rem;
+}
+
+th {
+    background: linear-gradient(135deg, var(--primario) 0%, var(--primario-dark) 100%);
+    color: var(--blanco);
+    padding: 1rem 1.2rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+td {
+    padding: 1rem 1.2rem;
+    background-color: var(--blanco);
+    border-bottom: 1px solid #edf5f0;
+    color: var(--texto);
+    transition: all 0.2s ease;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:hover td {
+    background-color: var(--primario-light);
+    transform: scale(1.003);
+    box-shadow: inset 0 1px 0 var(--borde), 0 2px 6px var(--sombra);
+}
+
+tr:nth-child(even) td {
+    background-color: #fafcfb;
+}
+
+td:last-child,
+th:last-child {
+    text-align: center;
+}
+
+td:first-child {
+    font-weight: 500;
+    color: var(--primario-dark);
+}
+
+/* ===============================================
+   BOTONES DE ACCIÓN EN TABLA
+   =============================================== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    gap: 0.3rem;
+}
+
+.btn-danger {
+    background-color: #fff0f0;
+    color: #c0392b;
+    border-color: #f5c6c6;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+    color: var(--blanco);
+    border-color: #c0392b;
+}
+
+.btn-success {
+    background-color: var(--primario-light);
+    color: var(--primario);
+    border-color: var(--borde);
+}
+
+.btn-success:hover {
+    background-color: var(--primario);
+    color: var(--blanco);
+    border-color: var(--primario);
+}
+
+.btn-secondary {
+    background-color: var(--blanco);
+    color: var(--texto);
+    border-color: var(--borde);
+}
+
+.btn-secondary:hover {
+    background-color: var(--primario-light);
+    border-color: var(--primario);
+    color: var(--primario-dark);
+}
+
+/* ===============================================
+   PAGINACIÓN
+   =============================================== */
+.paginado {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    flex-wrap: wrap;
+}
+
+.paginado .btn,
+.paginado .btn-secondary,
+.paginado button {
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    padding: 0.6rem 1.4rem;
+    border-radius: 40px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    color: var(--texto);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 1px 2px var(--sombra);
+    letter-spacing: 0.2px;
+    min-width: 110px;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.paginado .btn:hover:not(:disabled),
+.paginado .btn-secondary:hover:not(:disabled),
+.paginado button:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--primario) 0%, var(--primario-dark) 100%);
+    border-color: transparent;
+    color: var(--blanco);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(26, 107, 74, 0.25);
+}
+
+.paginado .btn:active:not(:disabled),
+.paginado .btn-secondary:active:not(:disabled),
+.paginado button:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px var(--sombra);
+}
+
+.paginado .btn:disabled,
+.paginado .btn-secondary:disabled,
+.paginado button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    background: #f0f7f3;
+    color: #8aab96;
+    border-color: var(--borde);
+    transform: none;
+    box-shadow: none;
+}
+
+.paginado .btn:focus-visible,
+.paginado .btn-secondary:focus-visible,
+.paginado button:focus-visible {
+    outline: 2px solid var(--primario);
+    outline-offset: 2px;
+    border-radius: 40px;
+}
+
+.paginado span {
+    background: var(--primario-light);
+    padding: 0.5rem 1.2rem;
+    border-radius: 40px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--primario-dark);
+    border: 1px solid var(--borde);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.02);
+}
+
+/* ===============================================
+   MODAL #registro
+   =============================================== */
+#registro {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1050;
+    justify-content: center;
+    align-items: center;
+}
+
+#registro .modal-dialog {
+    width: 90%;
+    max-width: 500px;
+    margin: auto;
+}
+
+#registro .modal-content {
+    background: var(--blanco);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+#registro .modal-header {
+    background: linear-gradient(135deg, var(--primario) 0%, var(--primario-dark) 100%);
+    color: var(--blanco);
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#registro .modal-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    margin: 0;
+}
+
+#registro .btn-close {
+    filter: invert(1);
+    opacity: 0.9;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
+#registro .btn-close:hover {
+    opacity: 1;
+}
+
+#registro .modal-body {
+    padding: 1.5rem;
+}
+
+#registro .modal-footer {
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    border-top: 1px solid var(--borde);
+}
+
+/* ===============================================
+   FORMULARIO DENTRO DEL MODAL
+   =============================================== */
+.form-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--texto-sec);
+    margin-bottom: 0.4rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.55rem 0.9rem;
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: var(--texto);
+    background: var(--blanco);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+
+.form-control:focus {
+    border-color: var(--primario);
+    box-shadow: 0 0 0 3px rgba(26, 107, 74, 0.12);
+}
+
+.mb-3 {
+    margin-bottom: 1rem;
+}
+
+/* ===============================================
+   BOTONES PRIMARIO Y SECUNDARIO EN MODAL
+   =============================================== */
+#registro .btn-primary {
+    background: linear-gradient(135deg, var(--primario) 0%, var(--primario-dark) 100%);
+    color: var(--blanco);
+    border: none;
+    padding: 0.55rem 1.4rem;
+    border-radius: 40px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: 0.2s;
+}
+
+#registro .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(26, 107, 74, 0.3);
+}
+
+#registro .btn-secondary {
+    background: var(--blanco);
+    color: var(--texto-sec);
+    border: 1px solid var(--borde);
+    padding: 0.55rem 1.4rem;
+    border-radius: 40px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: 0.2s;
+}
+
+#registro .btn-secondary:hover {
+    background: var(--primario-light);
+    border-color: var(--primario);
+    color: var(--primario-dark);
+}
+
+.busqueda-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.busqueda-id {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.busqueda-id input {
+  width: 160px;
+}
