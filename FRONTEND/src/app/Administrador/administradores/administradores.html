@@ -1,25 +1,45 @@
 <div class="container">
     <h1>Lista de Administradores</h1>
     <hr>
+
+    <!-- Barra superior: búsqueda + acciones principales -->
     <div class="busqueda-container">
-        <button class="btn-primary" (click)="abrirModal()">
-            Registrar
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-add" viewBox="0 0 16 16">
-                <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
-                <path d="M8.256 14a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z"/>
-            </svg>
-        </button>
         <div class="search-group">
             <input type="text" placeholder="Buscar por ID" id="idAdmin" class="search-input">
             <button (click)="buscarAdmin()">
                 Buscar
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
                 </svg>
             </button>
         </div>
+        <button class="btn btn-secondary" (click)="listarAdmins()">🔄 Recargar</button>
+        <button class="btn btn-secondary" (click)="cerrarSesion()">🔓 Cerrar Sesión</button>
     </div>
     <hr>
+
+    <!-- Botones de acciones de reservas -->
+    <div class="acciones-container">
+        <button class="btn-accion btn-dia" (click)="abrirModalReservasDelDia()">
+            📅<span>Reservas del Día</span>
+        </button>
+        <button class="btn-accion btn-cancelar" (click)="abrirModalCancelarReserva()">
+            ❌<span>Cancelar Reserva</span>
+        </button>
+        <button class="btn-accion btn-modificar" (click)="abrirModalModificarReserva()">
+            ✏️<span>Modificar Reserva</span>
+        </button>
+        <button class="btn-accion btn-pago" (click)="abrirModalRegistrarPago()">
+            💳<span>Registrar Pago</span>
+        </button>
+        <button class="btn-accion btn-pasajeros" (click)="abrirModalPasajerosViaje()">
+            🧑‍🤝‍🧑<span>Pasajeros por Viaje</span>
+        </button>
+    </div>
+    <hr>
+
+    <!-- Tabla de administradores -->
     <div class="contenedor-tabla">
         <table class="tabla-admin">
             <thead>
@@ -27,7 +47,6 @@
                     <th>ID</th>
                     <th>Nombre</th>
                     <th>Usuario</th>
-                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,13 +55,12 @@
                     <td>{{ a.id }}</td>
                     <td>{{ a.nombre }}</td>
                     <td>{{ a.usuario }}</td>
-                    <td>
-                        <button class="btn btn-danger" (click)="eliminarAdmin(a.id!)">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
-                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
-                            </svg>
-                        </button>
+                </tr>
+                }
+                @if(datosPaginados().length === 0){
+                <tr>
+                    <td colspan="3" style="text-align:center; color: #888; padding: 2rem;">
+                        No hay administradores para mostrar
                     </td>
                 </tr>
                 }
@@ -50,14 +68,14 @@
         </table>
 
         <div class="paginado">
-            <button class="btn btn-secondary" 
-                (click)="cambiarPagina(paginaActual() - 1)" 
+            <button class="btn btn-secondary"
+                (click)="cambiarPagina(paginaActual() - 1)"
                 [disabled]="paginaActual() === 1">
                 ⬅️ Anterior
             </button>
             <span>Página {{ paginaActual() }} de {{ totalPaginas() }}</span>
-            <button class="btn btn-secondary" 
-                (click)="cambiarPagina(paginaActual() + 1)" 
+            <button class="btn btn-secondary"
+                (click)="cambiarPagina(paginaActual() + 1)"
                 [disabled]="paginaActual() === totalPaginas()">
                 Siguiente ➡️
             </button>
@@ -65,32 +83,209 @@
     </div>
 </div>
 
-<div class="modal" tabindex="-1" id="registro">
+
+<!-- ================================================
+     MODAL: Reservas del Día
+     ================================================ -->
+<div class="modal" tabindex="-1" id="modalReservasDelDia">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">📅 Reservas del Día</h5>
+                <button type="button" class="btn-close" (click)="cerrarModalReservasDelDia()">✕</button>
+            </div>
+            <div class="modal-body">
+                @if(reservasDelDia.length === 0){
+                    <p class="texto-vacio">No hay reservas para hoy.</p>
+                } @else {
+                    <table class="tabla-modal">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Asiento</th>
+                                <th>ID Viaje</th>
+                                <th>CC Usuario</th>
+                                <th>Estado</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for(r of reservasDelDia; track r.id){
+                            <tr>
+                                <td>{{ r.id }}</td>
+                                <td>{{ r.numAsiento }}</td>
+                                <td>{{ r.idViaje }}</td>
+                                <td>{{ r.ccUsuario }}</td>
+                                <td><span class="badge-estado badge-{{ r.estado }}">{{ r.estado }}</span></td>
+                                <td>{{ r.totalPagar | currency:'COP':'symbol':'1.0-0' }}</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" (click)="cerrarModalReservasDelDia()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ================================================
+     MODAL: Cancelar Reserva
+     ================================================ -->
+<div class="modal" tabindex="-1" id="modalCancelarReserva">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Registrar Administrador</h5>
-                <button type="button" class="btn-close" (click)="cerrarModal()" aria-label="Close"></button>
+                <h5 class="modal-title">❌ Cancelar Reserva</h5>
+                <button type="button" class="btn-close" (click)="cerrarModalCancelarReserva()">✕</button>
             </div>
             <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label class="form-label">Nombre</label>
-                        <input type="text" class="form-control" [(ngModel)]="admin.nombre" name="nombre">
+                <div class="mb-3">
+                    <label class="form-label">ID de la Reserva</label>
+                    <input type="number" class="form-control" [(ngModel)]="cancelarReservaId" name="cancelarReservaId" placeholder="Ej: 10">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" (click)="cerrarModalCancelarReserva()">Cerrar</button>
+                <button class="btn btn-danger" type="button" (click)="cancelarReserva()">❌ Cancelar Reserva</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ================================================
+     MODAL: Modificar Reserva
+     ================================================ -->
+<div class="modal" tabindex="-1" id="modalModificarReserva">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">✏️ Modificar Reserva</h5>
+                <button type="button" class="btn-close" (click)="cerrarModalModificarReserva()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3 buscar-viaje-row">
+                    <div class="input-wrap">
+                        <label class="form-label">ID Reserva <span class="requerido">*</span></label>
+                        <input type="number" class="form-control" [(ngModel)]="modificarReservaData.idReserva" name="idReserva" placeholder="Ingrese el ID">
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Usuario</label>
-                        <input type="text" class="form-control" [(ngModel)]="admin.usuario" name="usuario">
+                    <button class="btn btn-primary buscar-btn" type="button" (click)="buscarReservaParaModificar()" [disabled]="cargandoReserva">
+                        @if(cargandoReserva){ ⏳ } @else { 🔍 Buscar }
+                    </button>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Número de Asiento <span class="opcional">(opcional)</span></label>
+                    <input type="number" class="form-control" [(ngModel)]="modificarReservaData.numAsiento" name="numAsiento" placeholder="Dejar vacío para no cambiar">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">ID Viaje <span class="opcional">(opcional)</span></label>
+                    <input type="number" class="form-control" [(ngModel)]="modificarReservaData.idViaje" name="idViaje" placeholder="Dejar vacío para no cambiar">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Estado <span class="opcional">(opcional)</span></label>
+                    <select class="form-control" [(ngModel)]="modificarReservaData.estado" name="estado">
+                        <option value="">-- No cambiar --</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="pagada">Pagada</option>
+                        <option value="finalizada">Finalizada</option>
+                        <option value="cancelada">Cancelada</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" (click)="cerrarModalModificarReserva()">Cerrar</button>
+                <button class="btn btn-primary" type="button" (click)="modificarReserva()">✏️ Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ================================================
+     MODAL: Registrar Pago
+     ================================================ -->
+<div class="modal" tabindex="-1" id="modalRegistrarPago">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">💳 Registrar Pago</h5>
+                <button type="button" class="btn-close" (click)="cerrarModalRegistrarPago()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">Solo se puede registrar pago a reservas en estado <strong>pendiente</strong>.</p>
+                <div class="mb-3">
+                    <label class="form-label">ID de la Reserva</label>
+                    <input type="number" class="form-control" [(ngModel)]="pagoReservaId" name="pagoReservaId" placeholder="Ej: 5">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" (click)="cerrarModalRegistrarPago()">Cerrar</button>
+                <button class="btn btn-success" type="button" (click)="registrarPago()">💳 Registrar Pago</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ================================================
+     MODAL: Pasajeros por Viaje
+     ================================================ -->
+<div class="modal" tabindex="-1" id="modalPasajerosViaje">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">🧑‍🤝‍🧑 Pasajeros por Viaje</h5>
+                <button type="button" class="btn-close" (click)="cerrarModalPasajerosViaje()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="buscar-viaje-row mb-3">
+                    <div class="input-wrap">
+                        <label class="form-label">ID del Viaje</label>
+                        <input type="number" class="form-control" [(ngModel)]="viajeIdPasajeros" name="idViaje" placeholder="Ej: 3">
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Contraseña</label>
-                        <input type="password" class="form-control" [(ngModel)]="admin.contrasena" name="contrasena">
+                    <button class="btn btn-primary buscar-btn" type="button" (click)="verPasajerosViaje()">🔍 Buscar</button>
+                </div>
+
+                @if(pasajerosResultado){
+                    <div class="resultado-viaje">
+                        <div class="viaje-info">
+                            <span>🚌 <strong>Viaje #{{ pasajerosResultado.viajeId }}</strong></span>
+                            <span>📅 {{ pasajerosResultado.fecha }}</span>
+                            <span>📍 {{ pasajerosResultado.lugarSalida }}</span>
+                            <span>🚗 {{ pasajerosResultado.automovil }}</span>
+                        </div>
+                        @if(pasajerosResultado.pasajeros.length === 0){
+                            <p class="texto-vacio">No hay pasajeros con pago confirmado en este viaje.</p>
+                        } @else {
+                            <table class="tabla-modal">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Apellido</th>
+                                        <th>Asiento</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for(p of pasajerosResultado.pasajeros; track p.asiento){
+                                    <tr>
+                                        <td>{{ p.nombre }}</td>
+                                        <td>{{ p.apellido }}</td>
+                                        <td>{{ p.asiento }}</td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
                     </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" (click)="cerrarModal()">Cerrar</button>
-                        <button class="btn btn-primary" type="button" (click)="guardarAdmin()">Guardar</button>
-                    </div>
-                </form>
+                }
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" (click)="cerrarModalPasajerosViaje()">Cerrar</button>
             </div>
         </div>
     </div>

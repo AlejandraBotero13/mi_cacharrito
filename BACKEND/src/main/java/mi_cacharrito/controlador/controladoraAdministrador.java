@@ -114,11 +114,13 @@ public class controladoraAdministrador {
     }
 
     @PostMapping("/iniciarSesion")
-    public ResponseEntity<?> iniciarSesion(@RequestParam("usuario") String usuario, @RequestParam("contraseña") String contraseña) {
+    public ResponseEntity<?> iniciarSesion(
+        @RequestParam("usuario") String usuario, 
+        @RequestParam("contrasena") String contrasena) {  // ← sin ñ
         String usuarioEncriptado = encryptionUtil.encrypt(usuario);
         List<Administrador> admins = repositorioAdministrador.findByUsuario(usuarioEncriptado);
         for (Administrador a : admins) {
-            if (passwordEncoder.matches(contraseña, a.getContraseña())) {
+            if (passwordEncoder.matches(contrasena, a.getContraseña())) {
                 a.setUsuario(encryptionUtil.decrypt(a.getUsuario()));
                 return ResponseEntity.ok(a);
             }
@@ -172,7 +174,7 @@ public class controladoraAdministrador {
     }
 
     @DeleteMapping("/eliminarViaje")
-    public String eliminarViaje(@RequestParam int id) {
+    public ResponseEntity<?> eliminarViaje(@RequestParam int id) {
         return controladoraViaje.eliminarViaje(id);
     }
 
@@ -248,13 +250,13 @@ public class controladoraAdministrador {
     }
 
     @PostMapping("/cancelarReservacion")
-    public String cancelarReservacion(@RequestParam("idReserva") int idReserva) {
+    public ResponseEntity<String> cancelarReservacion(@RequestParam("idReserva") int idReserva) {
         Optional<Reserva> opt = repositorioReserva.findById(idReserva);
-        if (opt.isEmpty()) return "Reserva no existe";
+        if (opt.isEmpty()) return ResponseEntity.status(404).body("Reserva no existe");
         Reserva r = opt.get();
         r.setEstado(Reserva.EstadoReserva.cancelada);
         repositorioReserva.save(r);
-        return "Reserva cancelada";
+        return ResponseEntity.ok("Reserva cancelada");
     }
 
     @PostMapping("/modificarReservacion")
@@ -296,21 +298,21 @@ public class controladoraAdministrador {
             }
         }
 
-        repositorioReserva.save(r);
-        return ResponseEntity.ok(r);
+        Reserva reservaGuardada = repositorioReserva.save(r);
+        return ResponseEntity.ok(reservaGuardada);
     }
 
     @PostMapping("/registrarPago")
-    public String registrarPago(@RequestParam("idReserva") int idReserva) {
+    public ResponseEntity<String> registrarPago(@RequestParam("idReserva") int idReserva) {
         Optional<Reserva> opt = repositorioReserva.findById(idReserva);
-        if (opt.isEmpty()) return "Reserva no existe";
+        if (opt.isEmpty()) return ResponseEntity.status(404).body("Reserva no existe");
         Reserva r = opt.get();
         if (r.getEstado() != Reserva.EstadoReserva.pendiente) {
-            return "La reserva no está en un estado que permita el pago (debe estar pendiente)";
+            return ResponseEntity.status(400).body("La reserva no está en estado pendiente");
         }
         r.setEstado(Reserva.EstadoReserva.pagada);
         repositorioReserva.save(r);
-        return "Pago registrado exitosamente";
+        return ResponseEntity.ok("Pago registrado exitosamente");
     }
 
     @GetMapping("/pasajerosViaje")

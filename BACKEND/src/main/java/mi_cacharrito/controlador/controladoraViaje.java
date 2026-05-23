@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,7 +43,11 @@ public class controladoraViaje {
     private itinerario repositorioItinerario;
 
     @PostMapping("/crearViaje")
-    public ResponseEntity<?> crearViaje(@RequestParam("fecha") String fecha, @RequestParam("horaSalida") String horaSalida, @RequestParam("precio") BigDecimal precio, @RequestParam("lugarSalida") String lugarSalida) {
+    public ResponseEntity<?> crearViaje(
+            @RequestParam("fecha") String fecha,
+            @RequestParam("horaSalida") String horaSalida,
+            @RequestParam("precio") BigDecimal precio,
+            @RequestParam("lugarSalida") String lugarSalida) {
         Viaje v = new Viaje();
         v.setFecha(LocalDate.parse(fecha));
         v.setHoraSalida(LocalTime.parse(horaSalida));
@@ -58,16 +63,24 @@ public class controladoraViaje {
         return repositorioViaje.findAll();
     }
 
+    // ✅ FIX: captura excepción de FK y retorna 409 con mensaje legible
     @DeleteMapping("/eliminarViaje")
-    public String eliminarViaje(@RequestParam("id") int id) {
+    public ResponseEntity<String> eliminarViaje(@RequestParam("id") int id) {
         if (!repositorioViaje.existsById(id))
-            return "No existe viaje con id: " + id;
-        repositorioViaje.deleteById(id);
-        return "Viaje eliminado";
+            return ResponseEntity.status(404).body("No existe viaje con id: " + id);
+        try {
+            repositorioViaje.deleteById(id);
+            return ResponseEntity.ok("Viaje eliminado");
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.status(409).body("No se puede eliminar: el viaje tiene registros asociados");
+        }
     }
 
     @PostMapping("/programar")
-    public String programar(@RequestParam("id") int id, @RequestParam("fecha") String fecha, @RequestParam("horaSalida") String horaSalida) {
+    public String programar(
+            @RequestParam("id") int id,
+            @RequestParam("fecha") String fecha,
+            @RequestParam("horaSalida") String horaSalida) {
         Optional<Viaje> opt = repositorioViaje.findById(id);
         if (opt.isEmpty()) return "Viaje no existe";
         Viaje v = opt.get();
@@ -78,7 +91,9 @@ public class controladoraViaje {
     }
 
     @PostMapping("/cambiarEstado")
-    public String cambiarEstado(@RequestParam("id") int id, @RequestParam("estado") String estado) {
+    public String cambiarEstado(
+            @RequestParam("id") int id,
+            @RequestParam("estado") String estado) {
         Optional<Viaje> opt = repositorioViaje.findById(id);
         if (opt.isEmpty()) return "Viaje no existe";
         Viaje v = opt.get();
@@ -88,7 +103,9 @@ public class controladoraViaje {
     }
 
     @PostMapping("/asignarAutomovil")
-    public String asignarAutomovil(@RequestParam("idViaje") int idViaje, @RequestParam("idAuto") int idAuto) {
+    public String asignarAutomovil(
+            @RequestParam("idViaje") int idViaje,
+            @RequestParam("idAuto") int idAuto) {
         Optional<Viaje> vOpt = repositorioViaje.findById(idViaje);
         Optional<Automovil> aOpt = repositorioAutomovil.findById(idAuto);
         if (vOpt.isEmpty() || aOpt.isEmpty())
@@ -108,8 +125,13 @@ public class controladoraViaje {
     }
 
     @PostMapping("/actualizarViaje")
-    public ResponseEntity<?> actualizarViaje(@RequestParam("id") int id, @RequestParam("fecha") String fecha, @RequestParam("horaSalida") String horaSalida, @RequestParam("precio") BigDecimal precio, @RequestParam("lugarSalida") String lugarSalida, @RequestParam(value = "estado", required = false) String estado) {
-
+    public ResponseEntity<?> actualizarViaje(
+            @RequestParam("id") int id,
+            @RequestParam("fecha") String fecha,
+            @RequestParam("horaSalida") String horaSalida,
+            @RequestParam("precio") BigDecimal precio,
+            @RequestParam("lugarSalida") String lugarSalida,
+            @RequestParam(value = "estado", required = false) String estado) {
 
         Optional<Viaje> opt = repositorioViaje.findById(id);
         if (opt.isEmpty()) {
