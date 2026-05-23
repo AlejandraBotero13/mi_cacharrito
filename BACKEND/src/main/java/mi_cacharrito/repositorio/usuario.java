@@ -7,7 +7,6 @@ import java.util.List;
 
 import mi_cacharrito.modelo.Usuario;
 
-
 @Repository
 public interface usuario extends JpaRepository<Usuario, String> {
     public List<Usuario> findByCc(String cc);

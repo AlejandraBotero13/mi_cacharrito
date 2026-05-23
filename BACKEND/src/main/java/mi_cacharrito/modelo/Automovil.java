@@ -27,17 +27,12 @@ public class Automovil {
     @Column(name = "marca", length = 25, nullable = false)
     private String marca;
 
-
-
-   
     public Automovil(int id, String placa, int capacidad, int modelo, String marca) {
         this.id = id;
         this.placa = placa;
         this.capacidad = capacidad;
         this.modelo = modelo;
         this.marca = marca;
-        
-
     }
 
     public Automovil() {
@@ -45,43 +40,42 @@ public class Automovil {
     }
 
     public int getId() {
-         return id; }
-
+         return id; 
+     }
 
     public void setId(int id) {
-         this.id = id; }
-
+         this.id = id; 
+    }
 
     public String getPlaca(){
-         return placa; }
-
+         return placa; 
+    }
 
     public void setPlaca(String placa)  {
-         this.placa = placa; }
-
+         this.placa = placa; 
+    }
 
     public int getCapacidad() {
-         return capacidad; }
-
+         return capacidad; 
+    }
 
     public void setCapacidad(int capacidad){
-         this.capacidad = capacidad; }
-
+         this.capacidad = capacidad; 
+    }
 
     public int getModelo(){
-         return modelo; }
-
+         return modelo; 
+    }
 
     public void setModelo(int modelo) {
-         this.modelo = modelo; }
-
+         this.modelo = modelo; 
+    }
 
     public String getMarca(){
-         return marca; }
-
+         return marca; 
+    }
 
     public void setMarca(String marca) {
-         this.marca = marca; }
-
-         
+         this.marca = marca; 
+    }         
 }

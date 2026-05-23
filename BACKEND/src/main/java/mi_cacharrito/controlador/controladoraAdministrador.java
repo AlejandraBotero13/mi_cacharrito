@@ -116,7 +116,7 @@ public class controladoraAdministrador {
     @PostMapping("/iniciarSesion")
     public ResponseEntity<?> iniciarSesion(
         @RequestParam("usuario") String usuario, 
-        @RequestParam("contrasena") String contrasena) {  // ← sin ñ
+        @RequestParam("contrasena") String contrasena) {
         String usuarioEncriptado = encryptionUtil.encrypt(usuario);
         List<Administrador> admins = repositorioAdministrador.findByUsuario(usuarioEncriptado);
         for (Administrador a : admins) {
@@ -279,7 +279,6 @@ public class controladoraAdministrador {
             }
             r.setNumeroAsiento(numAsiento);
         }
-
         if (idViaje != null) {
             Optional<Viaje> viajeOpt = repositorioViaje.findById(idViaje);
             if (viajeOpt.isEmpty()) {
@@ -289,7 +288,6 @@ public class controladoraAdministrador {
             r.setViaje(nuevoViaje);
             r.setTotalPagar(nuevoViaje.getPrecio());
         }
-
         if (estado != null) {
             try {
                 r.setEstado(Reserva.EstadoReserva.valueOf(estado));
@@ -297,7 +295,6 @@ public class controladoraAdministrador {
                 return ResponseEntity.status(400).body("Estado inválido. Valores permitidos: pendiente, pagada, finalizada, cancelada");
             }
         }
-
         Reserva reservaGuardada = repositorioReserva.save(r);
         return ResponseEntity.ok(reservaGuardada);
     }
@@ -339,7 +336,6 @@ public class controladoraAdministrador {
         respuesta.put("lugarSalida", viaje.get().getLugarSalida());
         respuesta.put("automovil", viaje.get().getAutomovil().getPlaca());
         respuesta.put("pasajeros", pasajeros);
-        
         return ResponseEntity.ok(respuesta);
     }
 }

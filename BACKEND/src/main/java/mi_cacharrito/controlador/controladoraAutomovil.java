@@ -74,9 +74,7 @@ public class controladoraAutomovil {
         if (auto.isEmpty()) {
             return ResponseEntity.status(404).body("Automóvil no encontrado");
         }
-        Automovil a = auto.get();
-        int capacidadTotal = a.getCapacidad();
-        return ResponseEntity.ok("Capacidad total: " + capacidadTotal);
+        return ResponseEntity.ok("Capacidad total: " + auto.get().getCapacidad());
     }
 
     @PostMapping("/asignarViaje")
@@ -93,7 +91,7 @@ public class controladoraAutomovil {
     }
 
     @PostMapping("/actualizarAutomovil")
-    public ResponseEntity<?> actualizarAutomovil(@RequestParam("id") int id, @RequestParam("placa") String placa,@RequestParam("capacidad") int capacidad,@RequestParam("modelo") int modelo,@RequestParam("marca") String marca) {
+    public ResponseEntity<?> actualizarAutomovil(@RequestParam("id") int id, @RequestParam("placa") String placa, @RequestParam("capacidad") int capacidad, @RequestParam("modelo") int modelo, @RequestParam("marca") String marca) {
         Optional<Automovil> opt = repositorioAutomovil.findById(id);
         if (opt.isEmpty()) {
             return ResponseEntity.status(404).body("Automóvil no existe");
@@ -107,80 +105,54 @@ public class controladoraAutomovil {
         return ResponseEntity.ok(auto);
     }
 
-    Automovil auto = opt.get();
-    auto.setPlaca(placa);
-    auto.setCapacidad(capacidad);
-    auto.setModelo(modelo);
-    auto.setMarca(marca);
-    repositorioAutomovil.save(auto);
-    return ResponseEntity.ok(auto);
-}
-
-
-    // 1. Cuántos viajes tiene cada automóvil
-@GetMapping("/viajesPorAuto")
-public ResponseEntity<?> viajesPorAuto(@RequestParam("id") int id) {
-    return ResponseEntity.ok(repositorioViaje.findByAutomovilId(id));
-}
-
-// 2. Autos disponibles (sin viaje activo)
-@GetMapping("/disponiblesPorFecha")
-public ResponseEntity<?> autosDisponiblesPorFecha(@RequestParam("fecha") String fecha) {
-    LocalDate fechaBuscada = LocalDate.parse(fecha.trim());
-    List<Automovil> autos = repositorioAutomovil.findAll();
-    List<Automovil> disponibles = new ArrayList<>();
-    for (Automovil a : autos) {
-        List<Viaje> viajesEnFecha = repositorioViaje.findByAutomovilId(a.getId())
-            .stream()
-            .filter(v -> v.getFecha().equals(fechaBuscada) && v.getEstado() == Viaje.EstadoViaje.activo)
-            .toList();
-        if (viajesEnFecha.isEmpty()) disponibles.add(a);
+    @GetMapping("/viajesPorAuto")
+    public ResponseEntity<?> viajesPorAuto(@RequestParam("id") int id) {
+        return ResponseEntity.ok(repositorioViaje.findByAutomovilId(id));
     }
-    return ResponseEntity.ok(disponibles);
-}
-// 3. Autos en viaje activo
-@GetMapping("/enViaje")
-public ResponseEntity<?> autosEnViaje() {
-    List<Automovil> autos = repositorioAutomovil.findAll();
-    List<Automovil> enViaje = new ArrayList<>();
-    for (Automovil a : autos) {
-        List<Viaje> activos = repositorioViaje.findByAutomovilId(a.getId())
-            .stream()
-            .filter(v -> v.getEstado() == Viaje.EstadoViaje.activo)
-            .toList();
-        if (!activos.isEmpty()) enViaje.add(a);
+
+    @GetMapping("/disponiblesPorFecha")
+    public ResponseEntity<?> autosDisponiblesPorFecha(@RequestParam("fecha") String fecha) {
+        LocalDate fechaBuscada = LocalDate.parse(fecha.trim());
+        List<Automovil> autos = repositorioAutomovil.findAll();
+        List<Automovil> disponibles = new ArrayList<>();
+        for (Automovil a : autos) {
+            List<Viaje> viajesEnFecha = repositorioViaje.findByAutomovilId(a.getId()).stream().filter(v -> v.getFecha().equals(fechaBuscada) && v.getEstado() == Viaje.EstadoViaje.activo).toList();
+            if (viajesEnFecha.isEmpty()) disponibles.add(a);
+        }
+        return ResponseEntity.ok(disponibles);
     }
-    return ResponseEntity.ok(enViaje);
-}
 
-@GetMapping("/estadoPorFecha")
-public ResponseEntity<?> estadoAutosPorFecha(@RequestParam("fecha") String fecha) {
-    LocalDate fechaBuscada = LocalDate.parse(fecha.trim());
-    List<Automovil> autos = repositorioAutomovil.findAll();
-    List<Map<String, Object>> resultado = new ArrayList<>();
-
-    for (Automovil a : autos) {
-        List<Viaje> viajesEnFecha = repositorioViaje.findByAutomovilId(a.getId())
-            .stream()
-            .filter(v -> v.getFecha().equals(fechaBuscada) && v.getEstado() == Viaje.EstadoViaje.activo)
-            .toList();
-
-        Map<String, Object> item = new HashMap<>();
-        item.put("id", a.getId());
-        item.put("estado", viajesEnFecha.isEmpty() ? "Disponible" : "En viaje");
-        resultado.add(item);
+    @GetMapping("/enViaje")
+    public ResponseEntity<?> autosEnViaje() {
+        List<Automovil> autos = repositorioAutomovil.findAll();
+        List<Automovil> enViaje = new ArrayList<>();
+        for (Automovil a : autos) {
+            List<Viaje> activos = repositorioViaje.findByAutomovilId(a.getId()).stream().filter(v -> v.getEstado() == Viaje.EstadoViaje.activo).toList();
+            if (!activos.isEmpty()) enViaje.add(a);
+        }
+        return ResponseEntity.ok(enViaje);
     }
-    return ResponseEntity.ok(resultado);
-}
 
-@GetMapping("/hayMovimientos")
-public ResponseEntity<?> hayMovimientosPorFecha(@RequestParam("fecha") String fecha) {
-    LocalDate fechaBuscada = LocalDate.parse(fecha.trim());
-    List<Viaje> todos = repositorioViaje.findAll();
-    boolean hayActivos = todos.stream()
-        .filter(v -> v.getAutomovil() != null)
-        .anyMatch(v -> v.getFecha().equals(fechaBuscada) && v.getEstado() == Viaje.EstadoViaje.activo);
-    return ResponseEntity.ok(hayActivos);
+    @GetMapping("/estadoPorFecha")
+    public ResponseEntity<?> estadoAutosPorFecha(@RequestParam("fecha") String fecha) {
+        LocalDate fechaBuscada = LocalDate.parse(fecha.trim());
+        List<Automovil> autos = repositorioAutomovil.findAll();
+        List<Map<String, Object>> resultado = new ArrayList<>();
+        for (Automovil a : autos) {
+            List<Viaje> viajesEnFecha = repositorioViaje.findByAutomovilId(a.getId()).stream().filter(v -> v.getFecha().equals(fechaBuscada) && v.getEstado() == Viaje.EstadoViaje.activo).toList();
+            Map<String, Object> item = new HashMap<>();
+            item.put("id", a.getId());
+            item.put("estado", viajesEnFecha.isEmpty() ? "Disponible" : "En viaje");
+            resultado.add(item);
+        }
+        return ResponseEntity.ok(resultado);
+    }
 
-}
+    @GetMapping("/hayMovimientos")
+    public ResponseEntity<?> hayMovimientosPorFecha(@RequestParam("fecha") String fecha) {
+        LocalDate fechaBuscada = LocalDate.parse(fecha.trim());
+        List<Viaje> todos = repositorioViaje.findAll();
+        boolean hayActivos = todos.stream().filter(v -> v.getAutomovil() != null).anyMatch(v -> v.getFecha().equals(fechaBuscada) && v.getEstado() == Viaje.EstadoViaje.activo);
+        return ResponseEntity.ok(hayActivos);
+    }
 }

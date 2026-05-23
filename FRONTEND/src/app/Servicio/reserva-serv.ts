@@ -34,14 +34,23 @@ export class ReservaServ {
   }
 
   confirmar(idReserva: number): Observable<string> {
-    return this.http.post(`${this.url}/confirmarReserva`, null, { params: { idReserva }, responseType: 'text' });
+    return this.http.post(`${this.url}/confirmarReserva`, null, { 
+      params: { idReserva }, 
+      responseType: 'text' 
+    });
   }
-
   eliminar(id: number): Observable<string> {
     return this.http.delete(`${this.url}/eliminarReserva`, { params: { id }, responseType: 'text' });
   }
 
   verDisponibilidad(idViaje: number): Observable<number[]> {
     return this.http.get<number[]>(`${this.url}/verDisponibilidad`, { params: { idViaje } });
+  }
+
+  viajesDisponibles(fecha?: string, destinoId?: number): Observable<any[]> {
+    let params: any = {};
+    if (fecha) params['fecha'] = fecha;
+    if (destinoId) params['destinoId'] = destinoId;
+    return this.http.get<any[]>(`${this.url}/viajesDisponibles`, { params });
   }
 }

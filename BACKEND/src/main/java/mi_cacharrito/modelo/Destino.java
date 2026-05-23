@@ -21,8 +21,6 @@ public class Destino {
     @Column(name = "descripcion", length = 200, nullable = false)
     private String descripcion;
 
-   
-
     public Destino(int id, String nombre, String descripcion) {
         this.id = id;
         this.nombre = nombre;
@@ -33,27 +31,27 @@ public class Destino {
 
     }
     
-
     public int getId() {
-         return id; }
+         return id; 
+    }
 
     public void setId(int id) {
-         this.id = id; }
+         this.id = id; 
+    }
 
     public String getNombre() { 
-        return nombre; }
-
+        return nombre; 
+    }
 
     public void setNombre(String nombre) { 
-        this.nombre = nombre; }
-
+        this.nombre = nombre; 
+    }
 
     public String getDescripcion() {
-         return descripcion; }
-
+         return descripcion; 
+    }
 
     public void setDescripcion(String descripcion) { 
-        this.descripcion = descripcion; }
-
-
+        this.descripcion = descripcion; 
+    }
 }

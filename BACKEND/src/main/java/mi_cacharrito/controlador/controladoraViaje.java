@@ -43,11 +43,7 @@ public class controladoraViaje {
     private itinerario repositorioItinerario;
 
     @PostMapping("/crearViaje")
-    public ResponseEntity<?> crearViaje(
-            @RequestParam("fecha") String fecha,
-            @RequestParam("horaSalida") String horaSalida,
-            @RequestParam("precio") BigDecimal precio,
-            @RequestParam("lugarSalida") String lugarSalida) {
+    public ResponseEntity<?> crearViaje(@RequestParam("fecha") String fecha,@RequestParam("horaSalida") String horaSalida,@RequestParam("precio") BigDecimal precio,@RequestParam("lugarSalida") String lugarSalida) {
         Viaje v = new Viaje();
         v.setFecha(LocalDate.parse(fecha));
         v.setHoraSalida(LocalTime.parse(horaSalida));
@@ -63,7 +59,7 @@ public class controladoraViaje {
         return repositorioViaje.findAll();
     }
 
-    // ✅ FIX: captura excepción de FK y retorna 409 con mensaje legible
+    
     @DeleteMapping("/eliminarViaje")
     public ResponseEntity<String> eliminarViaje(@RequestParam("id") int id) {
         if (!repositorioViaje.existsById(id))
@@ -77,10 +73,7 @@ public class controladoraViaje {
     }
 
     @PostMapping("/programar")
-    public String programar(
-            @RequestParam("id") int id,
-            @RequestParam("fecha") String fecha,
-            @RequestParam("horaSalida") String horaSalida) {
+    public String programar(@RequestParam("id") int id,@RequestParam("fecha") String fecha,@RequestParam("horaSalida") String horaSalida) {
         Optional<Viaje> opt = repositorioViaje.findById(id);
         if (opt.isEmpty()) return "Viaje no existe";
         Viaje v = opt.get();
@@ -91,9 +84,7 @@ public class controladoraViaje {
     }
 
     @PostMapping("/cambiarEstado")
-    public String cambiarEstado(
-            @RequestParam("id") int id,
-            @RequestParam("estado") String estado) {
+    public String cambiarEstado(@RequestParam("id") int id,@RequestParam("estado") String estado) {
         Optional<Viaje> opt = repositorioViaje.findById(id);
         if (opt.isEmpty()) return "Viaje no existe";
         Viaje v = opt.get();
@@ -103,9 +94,7 @@ public class controladoraViaje {
     }
 
     @PostMapping("/asignarAutomovil")
-    public String asignarAutomovil(
-            @RequestParam("idViaje") int idViaje,
-            @RequestParam("idAuto") int idAuto) {
+    public String asignarAutomovil(@RequestParam("idViaje") int idViaje,@RequestParam("idAuto") int idAuto) {
         Optional<Viaje> vOpt = repositorioViaje.findById(idViaje);
         Optional<Automovil> aOpt = repositorioAutomovil.findById(idAuto);
         if (vOpt.isEmpty() || aOpt.isEmpty())
@@ -125,13 +114,7 @@ public class controladoraViaje {
     }
 
     @PostMapping("/actualizarViaje")
-    public ResponseEntity<?> actualizarViaje(
-            @RequestParam("id") int id,
-            @RequestParam("fecha") String fecha,
-            @RequestParam("horaSalida") String horaSalida,
-            @RequestParam("precio") BigDecimal precio,
-            @RequestParam("lugarSalida") String lugarSalida,
-            @RequestParam(value = "estado", required = false) String estado) {
+    public ResponseEntity<?> actualizarViaje(@RequestParam("id") int id,@RequestParam("fecha") String fecha,@RequestParam("horaSalida") String horaSalida,@RequestParam("precio") BigDecimal precio,@RequestParam("lugarSalida") String lugarSalida,@RequestParam(value = "estado", required = false) String estado) {
 
         Optional<Viaje> opt = repositorioViaje.findById(id);
         if (opt.isEmpty()) {
@@ -165,4 +148,12 @@ public class controladoraViaje {
         }
         return lista;
     }
+
+    @GetMapping("/buscarViaje")
+        public ResponseEntity<?> buscarViaje(@RequestParam("id") int id) {
+        Optional<Viaje> opt = repositorioViaje.findById(id);
+        if (opt.isEmpty()) return ResponseEntity.status(404).body("Viaje no encontrado");
+        return ResponseEntity.ok(opt.get());
+    }
+    
 }

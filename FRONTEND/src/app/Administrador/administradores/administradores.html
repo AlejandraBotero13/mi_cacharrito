@@ -2,7 +2,6 @@
     <h1>Lista de Administradores</h1>
     <hr>
 
-    <!-- Barra superior: búsqueda + acciones principales -->
     <div class="busqueda-container">
         <div class="search-group">
             <input type="text" placeholder="Buscar por ID" id="idAdmin" class="search-input">
@@ -14,27 +13,44 @@
                 </svg>
             </button>
         </div>
-        <button class="btn btn-secondary" (click)="listarAdmins()">🔄 Recargar</button>
-        <button class="btn btn-secondary" (click)="cerrarSesion()">🔓 Cerrar Sesión</button>
+        
     </div>
     <hr>
 
     <!-- Botones de acciones de reservas -->
     <div class="acciones-container">
         <button class="btn-accion btn-dia" (click)="abrirModalReservasDelDia()">
-            📅<span>Reservas del Día</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-week" viewBox="0 0 16 16">
+                <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm-5 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>
+                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+            </svg>
+            <span>Reservas del Día</span>
         </button>
         <button class="btn-accion btn-cancelar" (click)="abrirModalCancelarReserva()">
-            ❌<span>Cancelar Reserva</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+        </svg>
+            <span>Cancelar Reserva</span>
         </button>
         <button class="btn-accion btn-modificar" (click)="abrirModalModificarReserva()">
-            ✏️<span>Modificar Reserva</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
+            </svg>
+            <span>Modificar Reserva</span>
         </button>
         <button class="btn-accion btn-pago" (click)="abrirModalRegistrarPago()">
-            💳<span>Registrar Pago</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-credit-card-fill" viewBox="0 0 16 16">
+                <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1H0zm0 3v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7zm3 2h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1"/>
+            </svg>
+            <span>Registrar Pago</span>
         </button>
         <button class="btn-accion btn-pasajeros" (click)="abrirModalPasajerosViaje()">
-            🧑‍🤝‍🧑<span>Pasajeros por Viaje</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-luggage" viewBox="0 0 16 16">
+                <path d="M2.5 1a.5.5 0 0 0-.5.5V5h-.5A1.5 1.5 0 0 0 0 6.5v7a1.5 1.5 0 0 0 1 1.415v.335a.75.75 0 0 0 1.5 0V15H4v-1H1.5a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5V7h1v-.5A1.5 1.5 0 0 0 6.5 5H6V1.5a.5.5 0 0 0-.5-.5zM5 5H3V2h2z"/>
+                <path d="M3 7.5a.5.5 0 0 0-1 0v5a.5.5 0 0 0 1 0zM11 6a1.5 1.5 0 0 1 1.5 1.5V8h2A1.5 1.5 0 0 1 16 9.5v5a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 14.5v-5A1.5 1.5 0 0 1 6.5 8h2v-.5A1.5 1.5 0 0 1 10 6zM9.5 7.5V8h2v-.5A.5.5 0 0 0 11 7h-1a.5.5 0 0 0-.5.5M6 9.5v5a.5.5 0 0 0 .5.5H7V9h-.5a.5.5 0 0 0-.5.5m7 5.5V9H8v6zm1.5 0a.5.5 0 0 0 .5-.5v-5a.5.5 0 0 0-.5-.5H14v6z"/>
+            </svg>
+            <span>Pasajeros por Viaje</span>
         </button>
     </div>
     <hr>
@@ -84,9 +100,7 @@
 </div>
 
 
-<!-- ================================================
-     MODAL: Reservas del Día
-     ================================================ -->
+<!-- MODAL: Reservas del Día -->
 <div class="modal" tabindex="-1" id="modalReservasDelDia">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -103,8 +117,8 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Asiento</th>
-                                <th>ID Viaje</th>
-                                <th>CC Usuario</th>
+                                <th>Viaje ID</th>
+                                <th>Usuario (CC)</th>
                                 <th>Estado</th>
                                 <th>Total</th>
                             </tr>
@@ -113,9 +127,9 @@
                             @for(r of reservasDelDia; track r.id){
                             <tr>
                                 <td>{{ r.id }}</td>
-                                <td>{{ r.numAsiento }}</td>
-                                <td>{{ r.idViaje }}</td>
-                                <td>{{ r.ccUsuario }}</td>
+                                <td>{{ r.numeroAsiento }}</td>
+                                <td>{{ r.viaje?.id }}</td>
+                                <td>{{ r.usuario?.cc }} ({{ r.usuario?.nombre }})</td>
                                 <td><span class="badge-estado badge-{{ r.estado }}">{{ r.estado }}</span></td>
                                 <td>{{ r.totalPagar | currency:'COP':'symbol':'1.0-0' }}</td>
                             </tr>
