@@ -1,3 +1,127 @@
 <div class="container">
-    <h1>Lista de Itinerarios</h1>
+  <h1>Itinerarios</h1>
+  <hr>
+
+  <div class="busqueda-container">
+    <button class="btn-primary" (click)="abrirModal()">
+      Agregar Destino
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10"/>
+        <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+      </svg>
+    </button>
+
+    <div class="search-group">
+      <input type="number" placeholder="Buscar por ID Viaje" [(ngModel)]="busquedaViaje" name="busquedaViaje">
+      <button (click)="buscarPorViaje()">
+        Buscar
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.099zm-5.242 1.156a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <hr>
+  <div class="contenedor-tabla">
+    <table class="tabla-usuarios">
+      <thead>
+        <tr>
+          <th>Viaje ID</th>
+          <th>Fecha</th>
+          <th>Lugar Salida</th>
+          <th>Orden</th>
+          <th>Destino</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(it of datosPaginados(); track it.ordenVisita) {
+          <tr>
+            <td>{{ it.viaje.id }}</td>
+            <td>{{ it.viaje.fecha }}</td>
+            <td>{{ it.viaje.lugarSalida }}</td>
+            <td>{{ it.ordenVisita }}</td>
+            <td>{{ it.destino.nombre }}</td>
+            <td>
+              <button class="btn btn-warning me-1" (click)="abrirActualizar(it)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                  <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                </svg>
+              </button>
+              <button class="btn btn-danger me-1" (click)="eliminarDestino(it.viaje.id, it.ordenVisita)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                  <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                </svg>
+              </button>
+              <button class="btn btn-danger" (click)="eliminarItinerario(it.viaje.id)" title="Eliminar todo el itinerario">
+                🗑️ Todo
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <div class="paginado">
+      <button class="btn btn-secondary" (click)="cambiarPagina(paginaActual() - 1)" [disabled]="paginaActual() === 1">⬅️ Anterior</button>
+      <span>Página {{ paginaActual() }} de {{ totalPaginas() }}</span>
+      <button class="btn btn-secondary" (click)="cambiarPagina(paginaActual() + 1)" [disabled]="paginaActual() === totalPaginas()">Siguiente ➡️</button>
+    </div>
+  </div>
+
+  <!-- Modal Crear -->
+  <div class="modal" id="registro" [style.display]="modalVisible ? 'flex' : 'none'">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Agregar Destino al Itinerario</h5>
+          <button type="button" class="btn-close" (click)="cerrarModal()"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">ID Viaje</label>
+            <input type="number" class="form-control" [(ngModel)]="idViaje" name="idViaje">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">ID Destino</label>
+            <input type="number" class="form-control" [(ngModel)]="idDestino" name="idDestino">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Orden</label>
+            <input type="number" class="form-control" [(ngModel)]="orden" name="orden">
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+            <button class="btn btn-primary" (click)="guardar()">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<div id="registro" [style.display]="modalActualizar ? 'flex' : 'none'">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Actualizar Orden</h5>
+        <button type="button" class="btn-close" (click)="cerrarActualizar()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Orden actual: {{ ordenActual }}</label>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Nuevo Orden</label>
+          <input type="number" class="form-control" [(ngModel)]="nuevoOrden" name="nuevoOrden">
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="cerrarActualizar()">Cerrar</button>
+          <button class="btn btn-primary" (click)="actualizarOrden()">Actualizar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

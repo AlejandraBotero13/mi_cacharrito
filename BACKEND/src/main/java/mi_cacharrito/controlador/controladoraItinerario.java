@@ -129,4 +129,11 @@ public class controladoraItinerario {
         repositorioItinerario.deleteAll(lista);
         return "Itinerario completo eliminado";
     }
+
+    @GetMapping("/listarOrdenado")
+    public ResponseEntity<?> listarOrdenado() {
+        return ResponseEntity.ok(repositorioItinerario.findAllOrdenadoPorViajeYOrden());
+}
+
+   
 }

@@ -1,3 +1,163 @@
 <div class="container">
-    <h1>Lista de Automoviles</h1>
+    <h1>Lista de Automóviles</h1>
+    <hr>
+    <div class="busqueda-container">
+        <button class="btn-primary" (click)="abrirModal()">
+            Registrar
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M4 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0m10 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M6 8a1 1 0 0 0 0 2h4a1 1 0 0 0 0-2z"/>
+            </svg>
+        </button>
+        <div class="search-group">
+            <input type="date" [(ngModel)]="fechaBusqueda">
+            <button (click)="buscarDisponibles()">
+                Disponibles
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+    <hr>
+    <div class="contenedor-tabla">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Placa</th>
+                    <th>Estado</th>
+                    <th>Capacidad</th>
+                    <th>Modelo</th>
+                    <th>Marca</th>
+                    <th>Viajes</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(a of datosPaginados(); track a.id){
+                    <tr>
+                        <td>{{ a.id }}</td>
+                        <td>{{ a.placa }}</td>
+                        <td>
+                            <span [class]="estadosPorAuto.get(a.id) === 'En viaje' ? 'badge-viaje' : 'badge-disponible'">
+                                {{ estadosPorAuto.get(a.id) ?? '...' }}
+                            </span>
+                        </td>
+                        <td>{{ a.capacidad }}</td>
+                        <td>{{ a.modelo }}</td>
+                        <td>{{ a.marca }}</td>
+                        <td>
+                            <button class="btn btn-info" (click)="verViajes(a.id)">
+                                {{ conteoViajes.get(a.id) ?? '...' }}
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-warning me-1" (click)="editarAutomovil(a)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168z"/>
+                                </svg>
+                            </button>
+                            <button class="btn btn-danger" (click)="eliminarAutomovil(a.id)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1z"/>
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="paginado">
+            <button class="btn btn-secondary" (click)="cambiarPagina(paginaActual() - 1)" [disabled]="paginaActual() === 1">
+                ⬅️ Anterior
+            </button>
+            <span>Página {{ paginaActual() }} de {{ totalPaginas() }}</span>
+            <button class="btn btn-secondary" (click)="cambiarPagina(paginaActual() + 1)" [disabled]="paginaActual() === totalPaginas()">
+                Siguiente ➡️
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal registro/edición -->
+<div class="modal" id="registro" [style.display]="modalVisible ? 'flex' : 'none'">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ automovil.id > 0 ? 'Actualizar Automóvil' : 'Registrar Automóvil' }}</h5>
+                <button type="button" class="btn-close" (click)="cerrarModal()"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label">Placa</label>
+                        <input type="text" class="form-control" [(ngModel)]="automovil.placa" name="placa">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Capacidad</label>
+                        <input type="number" class="form-control" [(ngModel)]="automovil.capacidad" name="capacidad">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Modelo</label>
+                        <input type="number" class="form-control" [(ngModel)]="automovil.modelo" name="modelo">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Marca</label>
+                        <input type="text" class="form-control" [(ngModel)]="automovil.marca" name="marca">
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" (click)="cerrarModal()">Cerrar</button>
+                        <button class="btn btn-primary" type="button" (click)="guardarAutomovil()">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal viajes -->
+<div class="modal" id="modalViajes" [style.display]="modalViajesVisible ? 'flex' : 'none'">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalle de Viajes</h5>
+                <button type="button" class="btn-close" (click)="cerrarModalViajes()"></button>
+            </div>
+            <div class="modal-body">
+                @if(viajesDetalle.length === 0){
+                    <p>Este automóvil no tiene viajes registrados.</p>
+                } @else {
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Estado</th>
+                                <th>Lugar Salida</th>
+                                <th>Precio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for(v of viajesDetalle; track v.id){
+                                <tr>
+                                    <td>{{ v.id }}</td>
+                                    <td>{{ v.fecha }}</td>
+                                    <td>{{ v.horaSalida }}</td>
+                                    <td>{{ v.estado }}</td>
+                                    <td>{{ v.lugarSalida }}</td>
+                                    <td>{{ v.precio }}</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" (click)="cerrarModalViajes()">Cerrar</button>
+            </div>
+        </div>
+    </div>
 </div>
