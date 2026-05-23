@@ -1,4 +1,123 @@
 <div class="container">
-    <h1>Sitio de Reservaciones</h1>
-    
+  <h1>Lista de Reservas</h1>
+  <hr>
+
+  <div class="busqueda-container">
+    <button class="btn-primary" (click)="abrirModal()">
+      Nueva Reserva
+    </button>
+    <div class="search-group">
+      <input type="text" id="idReserva" placeholder="Buscar por ID" class="search-input">
+      <button (click)="buscarReserva()">
+        Buscar
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <hr>
+
+  <div class="contenedor-tabla">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Asiento</th>
+          <th>Fecha</th>
+          <th>Estado</th>
+          <th>Usuario (CC)</th>
+          <th>Viaje ID</th>
+          <th>Total</th>
+          @if(adminLogueado) {
+            <th>Admin</th>
+            <th>Acciones</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for(r of datosPaginados(); track r.id) {
+        <tr>
+          <td>{{ r.id }}</td>
+          <td>{{ r.numeroAsiento }}</td>
+          <td>{{ r.fechaReserva | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td><span class="badge" [ngClass]="estadoClase(r.estado)">{{ r.estado }}</span></td>
+          <td>{{ r.usuario?.cc }} ({{ r.usuario?.nombre }})</td>
+          <td>{{ r.viaje?.id }}</td>
+          <td>${{ r.totalPagar }}</td>
+          @if(adminLogueado) {
+            <td>
+              @if(r.administrador) {
+                {{ r.administrador.nombre }} (ID: {{ r.administrador.id }})
+              } @else {
+                <span class="sin-admin">—</span>
+              }
+            </td>
+            <td>
+              <div class="acciones">
+                @if(r.estado === 'pendiente') {
+                  <button class="btn btn-success" (click)="confirmarReserva(r.id!)">✔ Confirmar</button>
+                  <button class="btn btn-danger" (click)="cancelarReserva(r.id!)">✖ Cancelar</button>
+                }
+                <button class="btn btn-danger" (click)="eliminarReserva(r.id!)">🗑 Eliminar</button>
+              </div>
+            </td>
+          }
+        </tr>
+        }
+      </tbody>
+    </table>
+
+    <div class="paginado">
+      <button class="btn btn-secondary"
+        (click)="cambiarPagina(paginaActual() - 1)"
+        [disabled]="paginaActual() === 1">
+        ⬅️ Anterior
+      </button>
+      <span>Página {{ paginaActual() }} de {{ totalPaginas() }}</span>
+      <button class="btn btn-secondary"
+        (click)="cambiarPagina(paginaActual() + 1)"
+        [disabled]="paginaActual() === totalPaginas()">
+        Siguiente ➡️
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal nueva reserva -->
+<div class="modal" id="modalReserva" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nueva Reserva</h5>
+        <button type="button" class="btn-close" (click)="cerrarModal()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        @if(adminLogueado) {
+          <div class="admin-badge-info">
+            <span>🔐 Reserva registrada por: <strong>{{ adminLogueado.nombre }}</strong> (ID: {{ adminLogueado.id }})</span>
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label">CC del Usuario</label>
+          <input type="text" class="form-control" [(ngModel)]="ccUsuario" name="ccUsuario" placeholder="Cédula del pasajero">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">ID del Viaje</label>
+          <input type="number" class="form-control" [(ngModel)]="idViaje" name="idViaje" placeholder="Ej: 1">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Número de Asiento</label>
+          <input type="number" class="form-control" [(ngModel)]="numAsiento" name="numAsiento" placeholder="Ej: 3" min="1">
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" (click)="cerrarModal()">Cerrar</button>
+          <button class="btn btn-primary" type="button" (click)="guardarReserva()">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
