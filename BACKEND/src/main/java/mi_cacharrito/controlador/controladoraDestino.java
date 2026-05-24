@@ -17,7 +17,7 @@ import mi_cacharrito.repositorio.destino;
 
 @RestController
 @RequestMapping("/destino/d/")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 public class controladoraDestino {
 
     @Autowired 
