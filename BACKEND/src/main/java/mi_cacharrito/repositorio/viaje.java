@@ -26,4 +26,7 @@ public interface viaje extends JpaRepository<Viaje, Integer> {
     
     @Query("SELECT DISTINCT v FROM Viaje v JOIN v.itinerarios i WHERE v.fecha = :fecha AND i.destino.id = :destinoId")
     List<Viaje> findByFechaYDestino(@Param("fecha") LocalDate fecha, @Param("destinoId") int destinoId);
+
+    @Query("SELECT DISTINCT v FROM Viaje v JOIN FETCH v.itinerarios i JOIN FETCH i.destino LEFT JOIN FETCH v.automovil WHERE v.estado = 'activo'")
+    List<Viaje> findViajesActivosConDestinos();
 }

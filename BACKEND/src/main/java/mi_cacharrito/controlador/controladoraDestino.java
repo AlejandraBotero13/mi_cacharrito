@@ -47,8 +47,7 @@ public class controladoraDestino {
 
         List<Itinerario> itinerarios = repositorioItinerario.findByDestino_Id(id);
         if (!itinerarios.isEmpty()) {
-            return "No se puede eliminar el destino porque tiene " + itinerarios.size() +
-                   " itinerarios asociados. Elimine primero los itinerarios.";
+            return "No se puede eliminar el destino porque tiene " + itinerarios.size() + " itinerarios asociados. Elimine primero los itinerarios.";
         }
 
         repositorioDestino.deleteById(id);

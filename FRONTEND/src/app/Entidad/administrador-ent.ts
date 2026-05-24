@@ -7,13 +7,13 @@ export class AdministradorEnt {
 
 export class ReservaEnt {
   id?: number;
-  numAsiento: number = 0;
-  idViaje: number = 0;
-  ccUsuario: string = '';
-  idAdmin: number = 0;
+  numeroAsiento: number = 0;
+  fechaReserva?: string;
   estado?: string;
   totalPagar?: number;
-  fechaReserva?: string;
+  usuario?: { cc: string; nombre: string };
+  viaje?: { id: number; precio?: number };
+  administrador?: { id: number; nombre: string };
 }
 
 export class ViajeEnt {

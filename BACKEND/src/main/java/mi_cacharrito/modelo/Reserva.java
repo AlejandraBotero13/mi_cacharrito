@@ -2,6 +2,7 @@ package mi_cacharrito.modelo;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,6 +39,7 @@ public class Reserva {
 
     @ManyToOne
     @JoinColumn(name = "viaje_id", nullable = true)
+    @JsonIgnoreProperties({"itinerarios"})
     private Viaje viaje;
 
     @ManyToOne
@@ -47,13 +49,9 @@ public class Reserva {
     @Column(name = "total_pagar", nullable = false)
     private BigDecimal totalPagar;
 
-    public enum EstadoReserva { pagada, pendiente, finalizada, cancelada
-    }
+    public enum EstadoReserva { pagada, pendiente, finalizada, cancelada}
 
-   
-
-    public Reserva(int id, int numeroAsiento, LocalDateTime fechaReserva, EstadoReserva estado, Usuario usuario, Viaje viaje, Administrador administrador, BigDecimal totalPagar) {
-                    
+    public Reserva(int id, int numeroAsiento, LocalDateTime fechaReserva, EstadoReserva estado, Usuario usuario, Viaje viaje, Administrador administrador, BigDecimal totalPagar) {        
         this.id = id;
         this.numeroAsiento = numeroAsiento;
         this.fechaReserva = fechaReserva;
@@ -69,68 +67,66 @@ public class Reserva {
      }
 
     public int getId() {
-         return id; }
-
+         return id; 
+    }
 
     public void setId(int id) { 
-        this.id = id; }
-
+        this.id = id; 
+    }
 
     public int getNumeroAsiento() {
-         return numeroAsiento; }
-
+         return numeroAsiento; 
+    }
 
     public void setNumeroAsiento(int numeroAsiento) { 
-        this.numeroAsiento = numeroAsiento; }
-
+        this.numeroAsiento = numeroAsiento; 
+    }
 
     public LocalDateTime getFechaReserva() {
-         return fechaReserva; }
-
+         return fechaReserva; 
+    }
 
     public void setFechaReserva(LocalDateTime fechaReserva) {
-         this.fechaReserva = fechaReserva; }
-
+         this.fechaReserva = fechaReserva; 
+    }
 
     public EstadoReserva getEstado() { 
-        return estado; }
-
+        return estado; 
+    }
 
     public void setEstado(EstadoReserva estado) { 
-        this.estado = estado; }
-
+        this.estado = estado; 
+    }
 
     public Usuario getUsuario() { 
-        return usuario; }
-
+        return usuario; 
+    }
 
     public void setUsuario(Usuario usuario) { 
-        this.usuario = usuario; }
-
+        this.usuario = usuario; 
+    }
 
     public Viaje getViaje() {
-         return viaje    ; }
-
+         return viaje    ; 
+    }
 
     public void setViaje(Viaje viaje) { 
-        this.viaje = viaje; }
-
+        this.viaje = viaje; 
+    }
 
     public Administrador getAdministrador() {
-         return administrador; }
-
+         return administrador; 
+    }
 
     public void setAdministrador(Administrador administrador) {
-         this.administrador = administrador; }
-
+         this.administrador = administrador; 
+    }
 
     public BigDecimal getTotalPagar() { 
-        return totalPagar; }
-
+        return totalPagar; 
+    }
 
     public void setTotalPagar(BigDecimal totalPagar) { 
-        this.totalPagar = totalPagar; }
-
-
-
+        this.totalPagar = totalPagar; 
+    }
 }

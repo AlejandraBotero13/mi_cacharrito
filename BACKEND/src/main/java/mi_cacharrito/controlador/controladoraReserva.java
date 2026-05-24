@@ -4,7 +4,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -33,7 +36,7 @@ import mi_cacharrito.repositorio.viaje;
 @CrossOrigin(origins = "http://localhost:4200")
 public class controladoraReserva {
 
-    @Autowired 
+    @Autowired
     private reserva repositorioReserva;
 
     @Autowired
@@ -42,7 +45,7 @@ public class controladoraReserva {
     @Autowired
     private viaje repositorioViaje;
 
-    @Autowired 
+    @Autowired
     private administrador repositorioAdministrador;
 
     @GetMapping("/listarReservas")
@@ -58,15 +61,12 @@ public class controladoraReserva {
     }
 
     @PostMapping("/crearReserva")
-    public ResponseEntity<?> crearReserva(@RequestParam("numAsiento") int numAsiento, @RequestParam("idViaje") int idViaje, 
-    @RequestParam("ccUsuario") String ccUsuario) {
-
+    public ResponseEntity<?> crearReserva(@RequestParam("numAsiento") int numAsiento, @RequestParam("idViaje") int idViaje, @RequestParam("ccUsuario") String ccUsuario) {
         return crearReservaBase(numAsiento, idViaje, ccUsuario, null);
     }
 
     @PostMapping("/crearReservaConAdmin")
-    public ResponseEntity<?> crearReservaConAdmin(@RequestParam("numAsiento") int numAsiento, @RequestParam("idViaje") int idViaje,@RequestParam("ccUsuario") String ccUsuario, @RequestParam("idAdmin") int idAdmin) {
-
+    public ResponseEntity<?> crearReservaConAdmin(@RequestParam("numAsiento") int numAsiento, @RequestParam("idViaje") int idViaje, @RequestParam("ccUsuario") String ccUsuario, @RequestParam("idAdmin") int idAdmin) {
         Optional<Administrador> adminOpt = repositorioAdministrador.findById(idAdmin);
         if (adminOpt.isEmpty())
             return ResponseEntity.status(404).body("Administrador no encontrado");
@@ -106,12 +106,11 @@ public class controladoraReserva {
     }
 
     @PostMapping("/actualizarReserva")
-    public ResponseEntity<?> actualizarReserva(@RequestParam("id") int id, @RequestParam(value = "numAsiento", required = false) Integer numAsiento, @RequestParam(value = "idViaje", required = false) Integer idViaje, @RequestParam(value = "estado", required = false)  String estado) {
+    public ResponseEntity<?> actualizarReserva(@RequestParam("id") int id, @RequestParam(value = "numAsiento", required = false) Integer numAsiento, @RequestParam(value = "idViaje", required = false) Integer idViaje, @RequestParam(value = "estado", required = false) String estado) {
         Optional<Reserva> opt = repositorioReserva.findById(id);
         if (opt.isEmpty())
             return ResponseEntity.status(404).body("Reserva no existe");
         Reserva r = opt.get();
-
         if (numAsiento != null) {
             Viaje viajeActual = r.getViaje();
             if (viajeActual != null) {
@@ -165,14 +164,13 @@ public class controladoraReserva {
     }
 
     @GetMapping("/elegirDestinoYFecha")
-    public List<Viaje> elegirDestinoYFecha(@RequestParam("destinoId") int destinoId, @RequestParam("fecha") String fecha) {
+    public List<Viaje> elegirDestinoYFecha(@RequestParam("destinoId") int destinoId,@RequestParam("fecha") String fecha) {
         LocalDate fechaParsed = LocalDate.parse(fecha);
         return repositorioViaje.findByFechaYDestino(fechaParsed, destinoId);
     }
 
     @GetMapping("/verDisponibilidad")
     public ResponseEntity<?> verDisponibilidad(@RequestParam("idViaje") int idViaje) {
-
         Optional<Viaje> viajeOpt = repositorioViaje.findById(idViaje);
         if (viajeOpt.isEmpty())
             return ResponseEntity.status(404).body("Viaje no existe");
@@ -191,16 +189,42 @@ public class controladoraReserva {
 
     @PostMapping("/confirmarReserva")
     public ResponseEntity<?> confirmarReserva(@RequestParam("idReserva") int idReserva) {
-
         Optional<Reserva> opt = repositorioReserva.findById(idReserva);
         if (opt.isEmpty())
             return ResponseEntity.status(404).body("Reserva no existe");
         Reserva r = opt.get();
         if (r.getEstado() != EstadoReserva.pendiente)
             return ResponseEntity.status(400).body("Solo pendiente puede confirmarse");
-       
         r.setEstado(EstadoReserva.pagada);
         repositorioReserva.save(r);
         return ResponseEntity.ok("Reserva confirmada. Asiento: " + r.getNumeroAsiento());
+    }
+
+    @GetMapping("/viajesDisponibles")
+    public ResponseEntity<?> viajesDisponibles(@RequestParam(value = "fecha", required = false) String fecha,@RequestParam(value = "destinoId", required = false) Integer destinoId) {
+        List<Viaje> viajes = repositorioViaje.findViajesActivosConDestinos();
+        if (fecha != null) {
+            LocalDate f = LocalDate.parse(fecha);
+            viajes = viajes.stream().filter(v -> v.getFecha().equals(f)).collect(Collectors.toList());
+        }
+
+        if (destinoId != null) {
+            int did = destinoId;
+            viajes = viajes.stream().filter(v -> v.getItinerarios().stream().anyMatch(i -> i.getDestino().getId() == did)).collect(Collectors.toList());
+        }
+
+        List<Map<String, Object>> resultado = viajes.stream().map(v -> {
+            Map<String, Object> m = new HashMap<>();
+            m.put("idViaje", v.getId());
+            m.put("fecha", v.getFecha());
+            m.put("horaSalida", v.getHoraSalida());
+            m.put("precio", v.getPrecio());
+            m.put("lugarSalida", v.getLugarSalida());
+            m.put("automovil", v.getAutomovil() != null ? v.getAutomovil().getPlaca() : null);
+            m.put("asientosDisponibles", v.getAutomovil() != null ? v.getAutomovil().getCapacidad() - repositorioReserva.findByViajeId(v.getId()).stream().filter(r -> r.getEstado() == EstadoReserva.pendiente || r.getEstado() == EstadoReserva.pagada).count(): null);
+            m.put("destinos", v.getItinerarios().stream().sorted(Comparator.comparingInt(i -> i.getOrdenVisita())).map(i -> Map.of("orden", i.getOrdenVisita(), "nombre", i.getDestino().getNombre())).collect(Collectors.toList()));
+        return m;
+        }).collect(Collectors.toList());
+        return ResponseEntity.ok(resultado);
     }
 }

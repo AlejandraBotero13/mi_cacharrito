@@ -89,20 +89,24 @@ export class Administradores implements OnInit {
 
   abrirModalReservasDelDia(): void {
     this.reservasDelDia = [];
-<<<<<<< Updated upstream
     this.adminServ.listarReservasDelDia().subscribe({
       next: data => {
         this.reservasDelDia = data;
+        this.cdr.detectChanges();
         this.abrirModalId('modalReservasDelDia');
       },
       error: () => alert('Error al obtener reservas del día')
     });
-=======
+
     this.adminServ.listarReservasDelDia().subscribe(
       data => { this.reservasDelDia = data; this.cdr.detectChanges(); this.abrirModalId('modalReservasDelDia'); },
       () => alert('Error al obtener reservas del día')
     );
->>>>>>> Stashed changes
+
+
+      () => alert('Error al obtener reservas del día')
+    );
+
   }
 
   cerrarModalReservasDelDia(): void { this.cerrarModalId('modalReservasDelDia'); }
