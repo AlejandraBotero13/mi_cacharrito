@@ -171,9 +171,9 @@ export class Viajes implements OnInit {
     }
   }
 
-  private cargarResumen(): void {
-    this.ServicioViaje.idYPlaca().subscribe(dato => {
-      this.viajesResumen.set(dato);
+  cargarResumen(): void {
+    this.ServicioViaje.listarAutomoviles().subscribe(dato => {
+      this.viajesResumen.set(dato.map((a: any) => ({ id: a.id, placa: a.placa })));
     });
   }
 }

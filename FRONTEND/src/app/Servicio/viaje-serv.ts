@@ -46,6 +46,10 @@ export class ViajeServ {
     return this.http.get<ViajeResumen[]>(`${this.url}/idYPlaca`);
   }
 
+  listarAutomoviles(): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.apiUrl}/automoviles/au/listar`);
+  }
+
   actualizarViaje(id: number, viaje: ViajeEnt): Observable<ViajeEnt> {
     return this.http.post<ViajeEnt>(`${this.url}/actualizarViaje`, null, {
       params: {
