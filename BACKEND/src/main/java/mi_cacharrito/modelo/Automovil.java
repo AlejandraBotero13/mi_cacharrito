@@ -10,6 +10,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "automovil")
 public class Automovil {
@@ -30,6 +32,7 @@ public class Automovil {
      @Column(name = "marca", length = 25, nullable = false)
      private String marca;
 
+     @JsonIgnore
      @OneToMany(mappedBy = "automovil", cascade = CascadeType.ALL, orphanRemoval = true)
      private List<Viaje> viajes;
 

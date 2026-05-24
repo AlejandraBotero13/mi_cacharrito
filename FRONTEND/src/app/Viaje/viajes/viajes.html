@@ -121,7 +121,7 @@
           </div>
           <div class="mb-3">
             <label class="form-label">Automovil</label>
-            <select class="form-control" [(ngModel)]="viaje.automovil" name="automovil">
+            <select class="form-control" [(ngModel)]="idAutoSeleccionado" name="automovil">
               <option [ngValue]="null" disabled selected>Seleccionar...</option>
               @for(r of viajesResumen(); track r.id){
                 <option [ngValue]="r.id">{{ r.placa }}</option>

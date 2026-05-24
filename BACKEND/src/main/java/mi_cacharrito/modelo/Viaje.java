@@ -45,7 +45,6 @@ public class Viaje {
     @Column(name = "lugar_salida", length = 100)
     private String lugarSalida;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "automovil_id", nullable = true)
     private Automovil automovil;
