@@ -30,7 +30,7 @@ import mi_cacharrito.repositorio.viaje;
 
 @RestController
 @RequestMapping("/viajes/v/")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 public class controladoraViaje {
 
     @Autowired
