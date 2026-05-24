@@ -98,9 +98,19 @@ export class Automoviles implements OnInit {
 
   eliminarAutomovil(id: number): void {
     if (!confirm('¿Eliminar este automóvil?')) return;
-    this.automovilService.eliminarAutomovil(id).subscribe((dato) => {
-      if (dato) this.cargarAutomoviles();
-    });
+    this.automovilService.eliminarAutomovil(id).subscribe(
+      dato => {
+        if (dato) this.cargarAutomoviles();
+      },
+      err => {
+        const msg = err.error?.message || err.error || '';
+        if (msg.includes('foreign key') || msg.includes('constraint')) {
+          alert('No se puede eliminar: el automóvil tiene viajes asociados.');
+        } else {
+          alert('Error al eliminar el automóvil.');
+        }
+      }
+    );
   }
 
   editarAutomovil(a: AutomovilEnt): void {

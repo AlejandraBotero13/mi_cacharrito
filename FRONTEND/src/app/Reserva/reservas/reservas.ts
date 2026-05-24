@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReservaServ } from '../../Servicio/reserva-serv';
 import { ReservaEnt } from '../../Entidad/reserva-ent';
+import { UsuarioServ } from '../../Servicio/usuario-serv';
+import { UsuarioEnt } from '../../Entidad/usuario-ent';
 
 @Component({
   selector: 'app-reservas',
@@ -22,6 +24,9 @@ export class Reservas implements OnInit {
   numAsiento: number | null = null;
   filtroFecha: string = '';
 
+  usuarioEncontrado: UsuarioEnt | null = null;
+  usuarioNoEncontrado = false;
+
   paginaActual = signal(1);
   itemsPorPagina = 5;
 
@@ -30,11 +35,16 @@ export class Reservas implements OnInit {
     return this.reservas().slice(inicio, inicio + this.itemsPorPagina);
   });
 
-  totalPaginas = computed(() => Math.max(1, Math.ceil(this.reservas().length / this.itemsPorPagina)));
+  totalPaginas = computed(() =>
+    Math.max(1, Math.ceil(this.reservas().length / this.itemsPorPagina))
+  );
 
   adminLogueado: { id: number; nombre: string } | null = null;
 
-  constructor(private reservaServ: ReservaServ) {}
+  constructor(
+    private reservaServ: ReservaServ,
+    private usuarioServ: UsuarioServ
+  ) {}
 
   ngOnInit(): void {
     const sesionAdmin = localStorage.getItem('adminLogueado');
@@ -44,13 +54,10 @@ export class Reservas implements OnInit {
 
   listar(): void {
     const pagina = this.paginaActual();
-    this.reservaServ.listar().subscribe(
-      data => {
-        this.reservas.set(data);
-        this.paginaActual.set(pagina);
-      },
-      err => alert('Error al listar: ' + (err.error || err.message))
-    );
+    this.reservaServ.listar().subscribe({
+      next: data => { this.reservas.set(data); this.paginaActual.set(pagina); },
+      error: err => alert('Error al listar: ' + (err.error || err.message))
+    });
   }
 
   abrirModal(): void {
@@ -58,6 +65,8 @@ export class Reservas implements OnInit {
     this.idViaje = null;
     this.numAsiento = null;
     this.filtroFecha = '';
+    this.usuarioEncontrado = null;
+    this.usuarioNoEncontrado = false;
     this.asientosDisponibles.set([]);
     this.cargarViajes();
     const modal = document.getElementById('modalReserva');
@@ -70,24 +79,34 @@ export class Reservas implements OnInit {
   }
 
   cargarViajes(): void {
-    this.reservaServ.viajesDisponibles(this.filtroFecha || undefined).subscribe(
-      data => this.viajesDisponibles.set(data),
-      err => alert('Error al cargar viajes: ' + (err.error || err.message))
-    );
+    this.reservaServ.viajesDisponibles(this.filtroFecha || undefined).subscribe({
+      next: data => this.viajesDisponibles.set(data),
+      error: err => alert('Error al cargar viajes: ' + (err.error || err.message))
+    });
   }
 
   seleccionarViaje(v: any): void {
     this.idViaje = v.idViaje;
     this.numAsiento = null;
-    this.reservaServ.verDisponibilidad(v.idViaje).subscribe(
-      asientos => this.asientosDisponibles.set(asientos),
-      err => alert('Error al cargar asientos: ' + (err.error || err.message))
-    );
+    this.reservaServ.verDisponibilidad(v.idViaje).subscribe({
+      next: asientos => this.asientosDisponibles.set(asientos),
+      error: err => alert('Error al cargar asientos: ' + (err.error || err.message))
+    });
   }
 
   nombresDestinos(destinos: any[]): string {
     if (!destinos || destinos.length === 0) return 'Sin destinos';
     return destinos.map(d => d.nombre).join(' → ');
+  }
+
+  buscarUsuarioPorCc(): void {
+    if (!this.ccUsuario) return;
+    this.usuarioEncontrado = null;
+    this.usuarioNoEncontrado = false;
+    this.usuarioServ.buscarPorCc(this.ccUsuario).subscribe({
+      next: u => { this.usuarioEncontrado = u; },
+      error: () => { this.usuarioNoEncontrado = true; }
+    });
   }
 
   guardarReserva(): void {
@@ -104,42 +123,42 @@ export class Reservas implements OnInit {
     const viaje: number = this.idViaje;
 
     if (this.adminLogueado) {
-      this.reservaServ.crearConAdmin(asiento, viaje, this.ccUsuario, this.adminLogueado.id).subscribe(
-        () => { this.listar(); this.cerrarModal(); },
-        err => alert('Error: ' + (err.error || err.message))
-      );
+      this.reservaServ.crearConAdmin(asiento, viaje, this.ccUsuario, this.adminLogueado.id).subscribe({
+        next: () => { this.listar(); this.cerrarModal(); },
+        error: err => alert('Error: ' + (err.error || err.message))
+      });
     } else {
-      this.reservaServ.crear(asiento, viaje, this.ccUsuario).subscribe(
-        () => { this.listar(); this.cerrarModal(); },
-        err => alert('Error: ' + (err.error || err.message))
-      );
+      this.reservaServ.crear(asiento, viaje, this.ccUsuario).subscribe({
+        next: () => { this.listar(); this.cerrarModal(); },
+        error: err => alert('Error: ' + (err.error || err.message))
+      });
     }
   }
 
   confirmarReserva(id: number): void {
     if (confirm('¿Confirmar y marcar como pagada?')) {
-      this.reservaServ.confirmar(id).subscribe(
-        () => { alert('Reserva confirmada'); this.listar(); },
-        err => alert('Error: ' + (err.error || err.message))
-      );
+      this.reservaServ.confirmar(id).subscribe({
+        next: () => { alert('Reserva confirmada'); this.listar(); },
+        error: err => alert('Error: ' + (err.error || err.message))
+      });
     }
   }
 
   cancelarReserva(id: number): void {
     if (confirm('¿Cancelar esta reserva?')) {
-      this.reservaServ.cancelar(id).subscribe(
-        () => this.listar(),
-        err => alert('Error: ' + (err.error || err.message))
-      );
+      this.reservaServ.cancelar(id).subscribe({
+        next: () => this.listar(),
+        error: err => alert('Error: ' + (err.error || err.message))
+      });
     }
   }
 
   eliminarReserva(id: number): void {
     if (confirm('¿Eliminar esta reserva?')) {
-      this.reservaServ.eliminar(id).subscribe(
-        () => this.listar(),
-        err => alert('Error: ' + (err.error || err.message))
-      );
+      this.reservaServ.eliminar(id).subscribe({
+        next: () => this.listar(),
+        error: err => alert('Error: ' + (err.error || err.message))
+      });
     }
   }
 
@@ -147,10 +166,10 @@ export class Reservas implements OnInit {
     const idInput = (document.getElementById('idReserva') as HTMLInputElement).value;
     const id = parseInt(idInput);
     if (isNaN(id)) return;
-    this.reservaServ.consultarPorId(id).subscribe(
-      data => { this.reservas.set([data]); this.paginaActual.set(1); },
-      err => alert('Error: ' + (err.error || err.message))
-    );
+    this.reservaServ.consultarPorId(id).subscribe({
+      next: data => { this.reservas.set([data]); this.paginaActual.set(1); },
+      error: err => alert('Error: ' + (err.error || err.message))
+    });
   }
 
   cambiarPagina(nueva: number): void {
@@ -166,5 +185,18 @@ export class Reservas implements OnInit {
       case 'finalizada': return 'badge-finalizada';
       default: return 'badge-pendiente';
     }
+  }
+
+  buscarPorCc(): void {
+    const cc = (document.getElementById('ccBuscar') as HTMLInputElement).value;
+    if (!cc) return;
+    this.reservaServ.listar().subscribe(
+      data => {
+        const filtradas = data.filter(r => r.usuario?.cc?.includes(cc));
+        this.reservas.set(filtradas);
+        this.paginaActual.set(1);
+      },
+      err => alert('Error: ' + (err.error || err.message))
+    );
   }
 }

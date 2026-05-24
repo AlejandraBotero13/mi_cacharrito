@@ -1,81 +1,93 @@
 package mi_cacharrito.modelo;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.List;
 
 @Entity
 @Table(name = "automovil")
 public class Automovil {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private int id;
+     @Id
+     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+     private int id;
 
-    @Column(name = "placa", length = 6, nullable = false)
-    private String placa;
+     @Column(name = "placa", length = 6, nullable = false)
+     private String placa;
 
-    @Column(name = "capacidad", nullable = false)
-    private int capacidad;
+     @Column(name = "capacidad", nullable = false)
+     private int capacidad;
 
-    @Column(name = "modelo", nullable = false)
-    private int modelo;
+     @Column(name = "modelo", nullable = false)
+     private int modelo;
 
-    @Column(name = "marca", length = 25, nullable = false)
-    private String marca;
+     @Column(name = "marca", length = 25, nullable = false)
+     private String marca;
 
-    public Automovil(int id, String placa, int capacidad, int modelo, String marca) {
-        this.id = id;
-        this.placa = placa;
-        this.capacidad = capacidad;
-        this.modelo = modelo;
-        this.marca = marca;
-    }
+     @OneToMany(mappedBy = "automovil", cascade = CascadeType.ALL, orphanRemoval = true)
+     private List<Viaje> viajes;
 
-    public Automovil() {
-
-    }
-
-    public int getId() {
-         return id; 
+     public Automovil(int id, String placa, int capacidad, int modelo, String marca) {
+          this.id = id;
+          this.placa = placa;
+          this.capacidad = capacidad;
+          this.modelo = modelo;
+          this.marca = marca;
      }
 
-    public void setId(int id) {
-         this.id = id; 
-    }
+     public Automovil() {}
 
-    public String getPlaca(){
-         return placa; 
-    }
+     public int getId() { 
+               return id; 
+     }
 
-    public void setPlaca(String placa)  {
-         this.placa = placa; 
-    }
+     public void setId(int id) {
+               this.id = id; 
+     }
 
-    public int getCapacidad() {
-         return capacidad; 
-    }
+     public String getPlaca() { 
+          return placa; 
+     }
 
-    public void setCapacidad(int capacidad){
-         this.capacidad = capacidad; 
-    }
+     public void setPlaca(String placa) {
+          this.placa = placa; 
+     }
 
-    public int getModelo(){
-         return modelo; 
-    }
+     public int getCapacidad() { 
+          return capacidad; 
+     }
 
-    public void setModelo(int modelo) {
-         this.modelo = modelo; 
-    }
+     public void setCapacidad(int capacidad) {
+          this.capacidad = capacidad; 
+     }
 
-    public String getMarca(){
-         return marca; 
-    }
+     public int getModelo() { 
+          return modelo; 
+     }
 
-    public void setMarca(String marca) {
-         this.marca = marca; 
-    }         
+     public void setModelo(int modelo) {
+          this.modelo = modelo; 
+     }
+
+     public String getMarca() { 
+          return marca; 
+     }
+
+     public void setMarca(String marca) {
+          this.marca = marca; 
+     }
+
+     public List<Viaje> getViajes() { 
+          return viajes; 
+     }
+
+     public void setViajes(List<Viaje> viajes) {
+          this.viajes = viajes; 
+     }
 }

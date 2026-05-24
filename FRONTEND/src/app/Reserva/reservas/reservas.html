@@ -8,17 +8,25 @@
       + Nueva Reserva
     </button>
 
-    @if(adminLogueado) {
-      <div class="search-group">
-        <input type="text" id="idReserva" placeholder="Buscar por ID" class="search-input">
-        <button (click)="buscarReserva()">
-          Buscar
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-          </svg>
-        </button>
-      </div>
-    }
+    <div class="search-group">
+      <input type="text" id="ccBuscar" placeholder="Buscar por cédula">
+      <button (click)="buscarPorCc()">
+        Buscar
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="search-group">
+      <input type="text" id="idReserva" placeholder="Buscar por ID">
+      <button (click)="buscarReserva()">
+        Buscar
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+        </svg>
+      </button>
+    </div>
   </div>
   <hr>
 
@@ -115,10 +123,37 @@
           </div>
         }
 
+        <!-- Input 1: CC + botón buscar -->
         <div class="mb-3">
           <label class="form-label">CC del Usuario</label>
-          <input type="text" class="form-control" [(ngModel)]="ccUsuario" name="ccUsuario" placeholder="Cédula del pasajero">
+          <div class="search-group" style="border-radius:10px;">
+            <input type="text" class="form-control" [(ngModel)]="ccUsuario" name="ccUsuario"
+                   placeholder="Cédula del pasajero"
+                   style="border-radius:10px 0 0 10px; border:none; flex:1;">
+            <button (click)="buscarUsuarioPorCc()" style="border-radius:0 10px 10px 0;">
+              Buscar
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+              </svg>
+            </button>
+          </div>
         </div>
+
+        <!-- Input 2: Usuario encontrado (readonly) -->
+        @if(usuarioEncontrado) {
+          <div class="mb-3">
+            <label class="form-label">Usuario encontrado</label>
+            <input type="text" class="form-control"
+                   [value]="usuarioEncontrado.nombre + ' ' + usuarioEncontrado.apellido + ' — Tel: ' + usuarioEncontrado.telefono"
+                   readonly style="background:#f4faf6; color:#1a6b4a; font-weight:500;">
+          </div>
+        }
+
+        @if(usuarioNoEncontrado) {
+          <div style="margin-top:-0.5rem; margin-bottom:1rem; font-size:0.82rem; color:#c0392b;">
+            ❌ No se encontró usuario con esa cédula
+          </div>
+        }
 
         <div class="mb-3">
           <label class="form-label">Filtrar por fecha (opcional)</label>

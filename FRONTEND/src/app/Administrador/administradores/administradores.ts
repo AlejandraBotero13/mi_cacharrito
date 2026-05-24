@@ -1,4 +1,3 @@
-
 import { Component, OnInit, signal, computed, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -89,24 +88,10 @@ export class Administradores implements OnInit {
 
   abrirModalReservasDelDia(): void {
     this.reservasDelDia = [];
-    this.adminServ.listarReservasDelDia().subscribe({
-      next: data => {
-        this.reservasDelDia = data;
-        this.cdr.detectChanges();
-        this.abrirModalId('modalReservasDelDia');
-      },
-      error: () => alert('Error al obtener reservas del día')
-    });
-
     this.adminServ.listarReservasDelDia().subscribe(
       data => { this.reservasDelDia = data; this.cdr.detectChanges(); this.abrirModalId('modalReservasDelDia'); },
       () => alert('Error al obtener reservas del día')
     );
-
-
-      () => alert('Error al obtener reservas del día')
-    );
-
   }
 
   cerrarModalReservasDelDia(): void { this.cerrarModalId('modalReservasDelDia'); }

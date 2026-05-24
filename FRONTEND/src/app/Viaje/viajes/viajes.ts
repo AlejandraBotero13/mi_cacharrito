@@ -77,15 +77,27 @@ export class Viajes implements OnInit {
       alert('Complete todos los campos');
       return;
     }
-    this.ServicioViaje.actualizarViaje(this.viaje.id, this.viaje).subscribe(dato => {
-      if (dato) {
-        this.listarViajes();
-        this.cerrarModal();
-        alert('Viaje actualizado');
-      } else {
-        alert('No se pudo actualizar');
-      }
-    });
+
+    this.viaje.lugarSalida = this.viaje.lugarSalida.trim();
+
+    const viajeAEnviar = { ...this.viaje };
+    delete viajeAEnviar.automovil;
+
+    this.ServicioViaje.actualizarViaje(this.viaje.id, viajeAEnviar).subscribe(
+      dato => {
+        if (dato) {
+          if (this.idAutoSeleccionado && this.idAutoSeleccionado > 0) {
+            this.ServicioViaje.asignarAutomovil(this.viaje.id, this.idAutoSeleccionado).subscribe();
+          }
+          this.listarViajes();
+          this.cerrarModal();
+          alert('Viaje actualizado');
+        } else {
+          alert('No se pudo actualizar');
+        }
+      },
+      err => alert('Error del servidor: ' + (err.error?.message || err.message))
+    );
   }
 
   guardarViaje(): void {
@@ -95,32 +107,37 @@ export class Viajes implements OnInit {
       return;
     }
 
-    this.ServicioViaje.guardarViaje(this.viaje).subscribe(viajeCreado => {
-      if (viajeCreado && viajeCreado.id) {
-        if (this.idAutoSeleccionado && this.idAutoSeleccionado > 0) {
-          this.ServicioViaje.asignarAutomovil(viajeCreado.id, this.idAutoSeleccionado).subscribe();
+    this.viaje.lugarSalida = this.viaje.lugarSalida.trim();
+
+    const viajeAEnviar = { ...this.viaje };
+    delete viajeAEnviar.automovil;
+
+    this.ServicioViaje.guardarViaje(viajeAEnviar).subscribe(
+      viajeCreado => {
+        if (viajeCreado && viajeCreado.id) {
+          if (this.idAutoSeleccionado && this.idAutoSeleccionado > 0) {
+            this.ServicioViaje.asignarAutomovil(viajeCreado.id, this.idAutoSeleccionado).subscribe();
+          }
+          this.listarViajes();
+          this.cerrarModal();
+          alert('Viaje guardado');
+        } else {
+          alert('No se registró el viaje');
         }
-        this.listarViajes();
-        this.cerrarModal();
-        alert('Viaje guardado');
-      } else {
-        alert('No se registró el viaje');
-      }
-    });
+      },
+      err => alert('Error del servidor: ' + (err.error?.message || err.message))
+    );
   }
 
-  // ✅ FIX: manejo correcto de errores HTTP
   eliminarViaje(id: number): void {
     if (confirm('¿Está seguro de eliminar este viaje?')) {
-      this.ServicioViaje.eliminarViaje(id).subscribe({
-        next: (dato) => {
+      this.ServicioViaje.eliminarViaje(id).subscribe(
+        dato => {
           alert(dato);
           this.listarViajes();
         },
-        error: (err) => {
-          alert(err.error || 'No se puede eliminar el viaje');
-        }
-      });
+        err => alert(err.error || 'No se puede eliminar el viaje')
+      );
     }
   }
 
@@ -134,15 +151,18 @@ export class Viajes implements OnInit {
     }
 
     const id = Number(idInput);
-    this.ServicioViaje.buscarPorId(id).subscribe(viaje => {
-      if (viaje && viaje.id) {
-        this.viajes.set([viaje]);
-        this.paginaActual.set(1);
-      } else {
-        alert('No se encontró el viaje');
-        this.listarViajes();
-      }
-    });
+    this.ServicioViaje.buscarPorId(id).subscribe(
+      viaje => {
+        if (viaje && viaje.id) {
+          this.viajes.set([viaje]);
+          this.paginaActual.set(1);
+        } else {
+          alert('No se encontró el viaje');
+          this.listarViajes();
+        }
+      },
+      err => alert('Error: ' + (err.error || err.message))
+    );
   }
 
   cambiarPagina(nuevaPagina: number) {
@@ -156,5 +176,4 @@ export class Viajes implements OnInit {
       this.viajesResumen.set(dato);
     });
   }
- 
 }
