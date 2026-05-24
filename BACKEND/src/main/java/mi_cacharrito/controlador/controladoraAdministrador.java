@@ -33,7 +33,7 @@ import mi_cacharrito.util.EncryptionUtil;
 
 @RestController
 @RequestMapping("/administradores/a/")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 public class controladoraAdministrador {
 
     @Autowired 
