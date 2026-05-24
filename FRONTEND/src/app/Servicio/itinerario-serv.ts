@@ -2,11 +2,12 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ItinerarioEnt } from '../Entidad/itinerario-ent';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class ItinerarioServ {
 
-  private url = 'http://localhost:8080/itinerarios/i';
+  private url = `${environment.apiUrl}/itinerarios/i`;
 
   constructor(private http: HttpClient) {}
 

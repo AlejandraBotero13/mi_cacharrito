@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DestinoEnt } from '../Entidad/destino-ent';
+import { environment } from '../../environments/environment';
 
 @Injectable({
 
@@ -9,7 +10,7 @@ import { DestinoEnt } from '../Entidad/destino-ent';
 })
 export class DestinoServ {
 
-  private apiUrl = 'http://localhost:8080/destino/d';
+  private apiUrl = `${environment.apiUrl}/destino/d`;
  
   constructor(private http: HttpClient) {}
 

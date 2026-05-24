@@ -2,14 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AdministradorEnt, ReservaEnt, ViajeEnt } from '../Entidad/administrador-ent';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdministradorServ {
 
-  private url = 'http://localhost:8080/administradores/a';
-  private urlReservas = 'http://localhost:8080/reservas/r';
+  private url = `${environment.apiUrl}/administradores/a`;
+  private urlReservas = `${environment.apiUrl}/reservas/r`;
 
   constructor(private http: HttpClient) {}
 

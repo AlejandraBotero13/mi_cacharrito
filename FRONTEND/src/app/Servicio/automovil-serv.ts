@@ -2,13 +2,14 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AutomovilEnt } from '../Entidad/automovil-ent';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AutomovilServ {
 
-  private apiUrl = 'http://localhost:8080/automoviles/au';
+  private apiUrl = `${environment.apiUrl}/automoviles/au`;
 
   constructor(private http: HttpClient) {}
 

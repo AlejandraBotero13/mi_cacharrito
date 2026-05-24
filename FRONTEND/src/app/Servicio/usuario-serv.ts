@@ -3,13 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UsuarioEnt } from '../Entidad/usuario-ent';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsuarioServ {
 
-  private url = 'http://localhost:8080/usuarios/u';
+  private url = `${environment.apiUrl}/usuarios/u`;
 
   constructor(private http: HttpClient) {}
 

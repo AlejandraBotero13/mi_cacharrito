@@ -2,10 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ReservaEnt } from '../Entidad/reserva-ent';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class ReservaServ {
-  private url = 'http://localhost:8080/reservas/r';
+  private url = `${environment.apiUrl}/reservas/r`;
 
   constructor(private http: HttpClient) {}
 
@@ -39,6 +40,7 @@ export class ReservaServ {
       responseType: 'text' 
     });
   }
+
   eliminar(id: number): Observable<string> {
     return this.http.delete(`${this.url}/eliminarReserva`, { params: { id }, responseType: 'text' });
   }
