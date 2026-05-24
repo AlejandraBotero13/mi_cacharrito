@@ -21,7 +21,7 @@ import mi_cacharrito.repositorio.usuario;
 
 @RestController
 @RequestMapping("/usuarios/u/")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 
 public class controladoraUsuario {
 
