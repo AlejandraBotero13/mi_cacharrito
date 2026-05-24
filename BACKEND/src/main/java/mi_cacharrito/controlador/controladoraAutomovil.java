@@ -24,7 +24,7 @@ import mi_cacharrito.repositorio.viaje;
 
 @RestController
 @RequestMapping("/automoviles/au/")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 public class controladoraAutomovil {
 
     @Autowired
